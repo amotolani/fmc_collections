@@ -27,6 +27,29 @@ Name | Description
 <!--end collection content-->
 ## Installing this collection
 
+### Via GitHub
+
+Clone this repository to your environment:
+
+```bash
+git clone https://github.com/nibss-dev/ansible_collections
+```
+Create a local ansible.cfg and specify the collections_paths configuration to locate the collections. See sample directory structure below
+```
+[defaults]
+collections_paths = ./
+```
+
+```
+└── customdir
+    ├── ansible_collections
+    ├── ansible.cfg
+    └── playbook.yml
+```
+Collections can then used in the playbook
+
+### Via Ansible Galaxy
+
 You can install the Cisco fmc collection with the Ansible Galaxy CLI:
 
     ansible-galaxy collection install cisco.fmc
