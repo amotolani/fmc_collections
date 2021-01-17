@@ -501,7 +501,7 @@ def main():
     source_security_group_tags = module.params['source_security_group_tags']
     destination_security_group_tags = module.params['destination_security_group_tags']
     acp = module.params['acp']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']

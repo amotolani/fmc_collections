@@ -141,7 +141,7 @@ def main():
     name = module.params['name']
     network_type = module.params['network_type']
     value = module.params['value']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']

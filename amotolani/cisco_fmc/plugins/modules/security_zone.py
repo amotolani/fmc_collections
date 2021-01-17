@@ -102,7 +102,7 @@ def main():
     requested_state = module.params['state']
     name = module.params['name']
     interface_mode = module.params['interface_mode']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
