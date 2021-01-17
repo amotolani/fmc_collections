@@ -8,6 +8,6 @@ description: Ansible Network Collection for Cisco FMC.
 license:
 - GPL-2.0-or-later
 tags:  [fmc, cisco, networking]
-repository: https://github.com/nibss-dev/ansible-collections
-documentation: https://github.com/nibss-dev/ansible-collections/tree/master/docs
-issues: https://github.com/nibss-dev/ansible-collections/issues
+repository: https://github.com/nibss-dev/fmc_collections
+documentation: https://github.com/nibss-dev/fmc_collections/tree/master/docs
+issues: https://github.com/nibss-dev/fmc_collections/issues
