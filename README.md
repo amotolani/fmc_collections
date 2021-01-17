@@ -1,4 +1,4 @@
-# CISCO_FMC Ansible Collection
+\# CISCO_FMC Ansible Collection
 
 The Ansible collection includes a variety of Ansible content to help automate Cisco FMC via the FMC API
 
@@ -78,7 +78,7 @@ The following example task creates Host fmc objects from a loop and deploys this
 * [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
-We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [nibss cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
+We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
 
 
 ### Code of Conduct
