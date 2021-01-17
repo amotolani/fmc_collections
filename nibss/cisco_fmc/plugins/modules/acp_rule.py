@@ -6,16 +6,15 @@ import base64
 import requests
 
 DOCUMENTATION = r'''
----
 author: Adelowo David (@amotolani)
 module: nibss.cisco_fmc.acp_rule
-short_description: Create, Modify and Delete Cisco FMC Access Rule objects
+short_description: 'Create, Modify and Delete Cisco FMC Access Rule objects'
 description:
-  - Create, Modify and Delete Cisco FMC network objects.
+  - 'Create, Modify and Delete Cisco FMC network objects.'
 options:
   name:
     description:
-      - The Access Rule to be created, modified or deleted.
+      - 'The Access Rule to be created, modified or deleted.'
     type: str
     required: true
   state:
@@ -61,7 +60,7 @@ options:
   section:
     description:
       - Access Rule Section
-      - Allowed value ['default', 'mandatory']
+      - 'Allowed value [''default'', ''mandatory'']'
     type: str
     required: false
   acp:
@@ -87,7 +86,7 @@ options:
   action:
     description:
       - Action applied by Access Rule
-      - Allowed values ['ALLOW', 'TRUST', 'BLOCK', 'MONITOR', 'BLOCK_RESET', 'BLOCK_INTERACTIVE', 'BLOCK_RESET_INTERACTIVE']
+      - Allowed values ['ALLOW', 'TRUST', 'BLOCK', 'MONITOR', 'BLOCK_RESET','BLOCK_INTERACTIVE', 'BLOCK_RESET_INTERACTIVE']
       - Required when state = "present"
     type: str
     required: false
@@ -97,197 +96,197 @@ options:
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC network objects to add to configuration
-          type: str
-          required: false
-        literal:
-          description:
-            - Literal network Addresses to add to configuration
-          type: str
-          required: false
-   destination_networks:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - 'Allowed values [''add'', ''remove'']'
+        type: str
+        required: true
+      name:
+        description:
+          - FMC network objects to add to configuration
+        type: str
+        required: false
+      literal:
+        description:
+          - Literal network Addresses to add to configuration
+        type: str
+        required: false
+  destination_networks:
     description:
       - Destination Networks targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC network objects to add to configuration
-          type: str
-          required: false
-        literal:
-          description:
-            - Literal network Addresses to add to configuration
-          type: str
-          required: false
-   vlan_tags:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC network objects to add to configuration
+        type: str
+        required: false
+      literal:
+        description:
+          - Literal network Addresses to add to configuration
+        type: str
+        required: false
+  vlan_tags:
     description:
       - vLAN tags targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC vlan tag objects to add to configuration
-          type: str
-          required: false
-   source_ports:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC vlan tag objects to add to configuration
+        type: str
+        required: false
+  source_ports:
     description:
       - Source Ports targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Port objects to add to configuration
-          type: str
-          required: false
-   destination_ports:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Port objects to add to configuration
+        type: str
+        required: false
+  destination_ports:
     description:
       - Destination Ports targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Port objects to add to configuration
-          type: str
-          required: false
-   source_zones:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Port objects to add to configuration
+        type: str
+        required: false
+  source_zones:
     description:
       - Source Zones targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Security Zone objects to add to configuration
-          type: str
-          required: false
-   destination_zones:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Security Zone objects to add to configuration
+        type: str
+        required: false
+  destination_zones:
     description:
       - Destination Zones targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Security Zone objects to add to configuration
-          type: str
-          required: false
-   destination_zones:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Security Zone objects to add to configuration
+        type: str
+        required: false
+  applications:
     description:
       - Applications targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Applications objects to add to configuration
-          type: str
-          required: false
-   source_security_group_tags:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Applications objects to add to configuration
+        type: str
+        required: false
+  source_security_group_tags:
     description:
       - Source Security Group Tags targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Security Group Tag objects to add to configuration
-          type: str
-          required: false
-   destination_security_group_tags:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Security Group Tag objects to add to configuration
+        type: str
+        required: false
+  destination_security_group_tags:
     description:
       - Destination Security Group Tags targeted by access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        name:
-          description:
-            - FMC Security Group Tag objects to add to configuration
-          type: str
-          required: false
-   new_comments:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Security Group Tag objects to add to configuration
+        type: str
+        required: false
+  new_comments:
     description:
       - Comments on access rule
     type: dict
     required: false
     options:
-        action: 
-          description:
-            - Action to be applied to configuration elements
-            - Allowed values ['add', 'remove']
-          type: str
-          required: true
-        comment:
-          description:
-            - FMC Security Group Tag objects to add to configuration
-          type: str
-          required: false
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      comment:
+        description:
+          - FMC Security Group Tag objects to add to configuration
+        type: str
+        required: false
   fmc:
     description:
       - IP address or FQDN of Cisco FMC.
@@ -308,8 +307,8 @@ options:
     description:
       - Option to deploy configurations to deployable devices after changes
     type: bool
-    default: False
-    required: False
+    default: false
+    required: false
 '''
 
 EXAMPLES = r'''    
