@@ -7,7 +7,7 @@ import requests
 
 DOCUMENTATION = r'''
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.acp_rule
+module: amotolani.cisco_fmc.acp_rule
 short_description: 'Create, Modify and Delete Cisco FMC Access Rule objects'
 description:
   - 'Create, Modify and Delete Cisco FMC network objects.'
@@ -313,7 +313,7 @@ options:
 
 EXAMPLES = r'''    
 - name: Delete Access Policy Rule
-  nibss.cisco_fmc.acp_rule:
+  amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: absent
     fmc: cisco.sample.com
@@ -326,7 +326,7 @@ EXAMPLES = r'''
     acp: test
     
 - name: Create Access Policy Rule
-  nibss.cisco_fmc.acp_rule:
+  amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: present
     fmc: ciscofmc.sample.com

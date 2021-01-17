@@ -1,8 +1,8 @@
-.. _nibss.cisco_fmc.network_group:
+.. _amotolani.cisco_fmc.security_zone:
 
 
 ***************************
-nibss.cisco_fmc.network_group
+amotolani.cisco_fmc.security_zone
 ***************************
 
 

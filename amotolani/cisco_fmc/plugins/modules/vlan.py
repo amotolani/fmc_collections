@@ -7,7 +7,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.vlan
+module: amotolani.cisco_fmc.vlan
 short_description: Create, Modify and Delete Cisco FMC vlan objects
 description:
   - Create, Modify and Delete Cisco FMC vlan objects.
@@ -58,7 +58,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create Vlan objects and deploy changes
-  nibss.cisco_fmc.vlan:
+  amotolani.cisco_fmc.vlan:
     name: "{{item.name}}"
     state: present
     vlan_start: "{{item.vlan_start}}"
@@ -72,7 +72,7 @@ EXAMPLES = r'''
     - {name: vlan2 , vlan_start: 333 , vlan_end: 444}
 
 - name: Delete Vlan objects
-  nibss.cisco_fmc.vlan:
+  amotolani.cisco_fmc.vlan:
     name: vlan1
     state: absent
     fmc: ciscofmc.sample.com

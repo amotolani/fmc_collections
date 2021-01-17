@@ -1,4 +1,4 @@
-# NIBSS CISCO_FMC Ansible Collection
+# CISCO_FMC Ansible Collection
 
 The Ansible collection includes a variety of Ansible content to help automate Cisco FMC via the FMC API
 
@@ -14,13 +14,13 @@ This collection has been tested against following Ansible versions: **>=2.9.10,<
 ### Modules
 Name | Description
 --- | ---
-[nibss.cisco_fmc.acp_rule](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.acp_rule.rst)|FMC Access Rule Module
-[nibss.cisco_fmc.network](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.network.rst)|FMC Network Object Module
-[nibss.cisco_fmc.network_group](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.network_group.rst)|FMC Network Group Object Module
-[nibss.cisco_fmc.port](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.port.rst)|FMC Port Object Module
-[nibss.cisco_fmc.port_group](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.port_group.rst)|FMC Port Group Object Module
-[nibss.cisco_fmc.vlan](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.vlan.rst)|FMC VLAN Object Module
-[nibss.cisco_fmc.security_zone](https://github.com/nibss-dev/fmc_collections/blob/master/nibss/cisco_fmc/docs/nibss.cisco_fmc.security_zone.rst)|FMC Security Zone Object Module
+[amotolani.cisco_fmc.acp_rule](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.acp_rule.rst)|FMC Access Rule Module
+[amotolani.cisco_fmc.network](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network.rst)|FMC Network Object Module
+[amotolani.cisco_fmc.network_group](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network_group.rst)|FMC Network Group Object Module
+[amotolani.cisco_fmc.port](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port.rst)|FMC Port Object Module
+[amotolani.cisco_fmc.port_group](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port_group.rst)|FMC Port Group Object Module
+[amotolani.cisco_fmc.vlan](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.vlan.rst)|FMC VLAN Object Module
+[amotolani.cisco_fmc.security_zone](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.security_zone.rst)|FMC Security Zone Object Module
 
 <!--end collection content-->
 ## Installing this collection
@@ -34,31 +34,31 @@ collections_paths = ./
 ### Install the latest version from GitHub
 
 ```bash
-ansible-galaxy collection install git@github.com:nibss-dev/fmc_collections.git#/nibss/cisco_fmc
+ansible-galaxy collection install git@github.com:amotolani-dev/fmc_collections.git#/amotolani/cisco_fmc
 ```
 
 
 ### Install from Ansible Galaxy
 
-    ansible-galaxy collection install nibss.cisco_fmc
+    ansible-galaxy collection install amotolani.cisco_fmc
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
 
 ```yaml
 ---
 collections:
-  - name: nibss.cisco_fmc
+  - name: amotolani.cisco_fmc
 ```
 
-### Using modules from the nibss.cisco_fmc collection in your playbooks
+### Using modules from the amotolani.cisco_fmc collection in your playbooks
 
-You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `nibss.cisco_fmc.network`.
+You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `amotolani.cisco_fmc.network`.
 The following example task creates Host fmc objects from a loop and deploys this configuration, using the FQCN:
 
 ```yaml
 ---
   - name: Create Host objects from a loop
-    nibss.cisco_fmc.network:
+    amotolani.cisco_fmc.network:
         name: "{{item.name}}"
         state: present
         network_type: Host
@@ -78,7 +78,7 @@ The following example task creates Host fmc objects from a loop and deploys this
 * [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
-We are seeking nibss contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [nibss cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
+We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [nibss cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
 
 
 ### Code of Conduct

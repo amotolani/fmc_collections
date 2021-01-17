@@ -7,7 +7,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.port_group
+module: amotolani.cisco_fmc.port_group
 short_description: Create, Modify and Delete Cisco FMC port group objects
 description:
   - Create, Modify and Delete Cisco FMC port group objects.
@@ -61,7 +61,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create Port Group with existing port objects and deploy changes
-  nibss.cisco_fmc.port_group:
+  amotolani.cisco_fmc.port_group:
     name: Port-Group-1
     state: present
     fmc: cisco.sample.com
@@ -72,7 +72,7 @@ EXAMPLES = r'''
     group_objects: MySampleHost
 
 - name: Delete Port Group
-  nibss.cisco_fmc.port_group:
+  amotolani.cisco_fmc.port_group:
     name: Port-Group-1
     state: absent
     fmc: cisco.sample.com
@@ -81,7 +81,7 @@ EXAMPLES = r'''
 
     
 - name: Remove address and port object from Port Group
-  nibss.cisco_fmc.port_group:
+  amotolani.cisco_fmc.port_group:
     name: Port-Group-2
     state: present
     fmc: cisco.sample.com

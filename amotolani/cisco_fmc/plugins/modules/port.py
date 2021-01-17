@@ -7,7 +7,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.port
+module: amotolani.cisco_fmc.port
 short_description: Create, Modify and Delete Cisco FMC port objects
 description:
   - Create, Modify and Delete Cisco FMC port objects.
@@ -59,7 +59,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create Port objects and deploy changes
-  nibss.cisco_fmc.port:
+  amotolani.cisco_fmc.port:
     name: "{{item.name}}"
     state: present
     port: "{{item.port}}"
@@ -73,7 +73,7 @@ EXAMPLES = r'''
     - {name: port2 , port: 11001-11004, protocol: TCP}
 
 - name: Delete Port objects
-  nibss.cisco_fmc.port:
+  amotolani.cisco_fmc.port:
     name: ApplicationPort
     state: absent
     port: 7000

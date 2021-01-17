@@ -5,7 +5,7 @@ from ansible.module_utils.basic import AnsibleModule
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.security_zone
+module: amotolani.cisco_fmc.security_zone
 short_description: Create, Modify and Delete Cisco FMC network objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
@@ -57,7 +57,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create Security Zone objects and deploy changes
-  nibss.cisco_fmc.security_zone:
+  amotolani.cisco_fmc.security_zone:
     name: "{{item.name}}"
     state: present
     port: "{{item.port}}"
@@ -71,7 +71,7 @@ EXAMPLES = r'''
     - {name: port2 , port: 11001-11004, protocol: TCP}
 
 - name: Delete  Security Zone objects
-  nibss.cisco_fmc.security_zone:
+  amotolani.cisco_fmc.security_zone:
     name: ApplicationPort
     state: absent
     port: 7000
