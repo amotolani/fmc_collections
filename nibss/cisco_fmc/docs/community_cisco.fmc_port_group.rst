@@ -1,8 +1,8 @@
-.. _cisco.fmc.fmc_port_group:
+.. _nibss.cisco_fmc.port_group:
 
 
 ************************
-cisco.fmc.fmc_port_group
+nibss.cisco_fmc.port_group
 ************************
 
 

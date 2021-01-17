@@ -1,5 +1,5 @@
-namespace: cisco
-name: fmc
+namespace: nibss
+name: cisco_fmc
 version: 1.0.0
 readme: README.md
 authors:
@@ -7,7 +7,7 @@ authors:
 description: Ansible Network Collection for Cisco FMC.
 license:
 - GPL-2.0-or-later
-tags:  [cisco, fmc, networking]
+tags:  [fmc, cisco, networking]
 repository: https://github.com/nibss-dev/ansible-collections
 documentation: https://github.com/nibss-dev/ansible-collections/tree/master/docs
 issues: https://github.com/nibss-dev/ansible-collections/issues

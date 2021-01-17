@@ -1,8 +1,8 @@
-.. _cisco.fmc.fmc_network:
+.. _nibss.cisco_fmc.network:
 
 
 *************************
-cisco.fmc.fmc_network
+nibss.cisco_fmc.network
 *************************
 
 

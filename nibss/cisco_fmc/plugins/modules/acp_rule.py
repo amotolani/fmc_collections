@@ -8,7 +8,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: cisco.fmc.fmc_acp_rule
+module: nibss.cisco_fmc.acp_rule
 short_description: Create, Modify and Delete Cisco FMC Access Rule objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
@@ -314,10 +314,10 @@ options:
 
 EXAMPLES = r'''    
 - name: Delete Access Policy Rule
-  cisco.fmc.fmc_acp_rule:
+  nibss.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: absent
-    fmc: ciscofmc.sample.com
+    fmc: cisco.sample.com
     username: admin
     password: Cisco1234
     auto_deploy: False
@@ -327,7 +327,7 @@ EXAMPLES = r'''
     acp: test
     
 - name: Create Access Policy Rule
-  cisco.fmc.fmc_acp_rule:
+  nibss.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: present
     fmc: ciscofmc.sample.com
@@ -502,7 +502,7 @@ def main():
     source_security_group_tags = module.params['source_security_group_tags']
     destination_security_group_tags = module.params['destination_security_group_tags']
     acp = module.params['acp']
-    fmc = module.params['fmc']
+    fmc = module.params['cisco_fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -558,7 +558,7 @@ def main():
 
     def multi_obj_config_state(requested_config, config_class,  fmc_config_name="", config_name=''):
         """
-        To be used when multiple fmc objects can configured.
+        To be used when multiple cisco_fmc objects can configured.
         This function checks current the state of a configuration for an access rule.
         If there is a need to change the state/or not based on the configuration requested, it appends True/False to a dictionary using the config_name as the key.
         :param requested_config: Configuration to be added/removed from Access Rule
@@ -570,7 +570,7 @@ def main():
         current_config = []
         if fmc_config_name in _obj1.keys() and requested_config is not None:
 
-            # Call validate function to check that the requested config object is an existing fmc object
+            # Call validate function to check that the requested config object is an existing cisco_fmc object
             validate_multi_obj_config(requested_config=requested_config, config_class=config_class, config_name=config_name)
 
             # rule exists, No objects of the specified type currently added, requested action for config is "add". Changed status set to True
@@ -614,7 +614,7 @@ def main():
 
     def net_obj_config_state(requested_config, config_class,  fmc_config_name="", config_name=''):
         """
-        To be used when multiple fmc objects can configured.
+        To be used when multiple cisco_fmc objects can configured.
         This function checks current the state of a configuration for an access rule.
         If there is a need to change the state/or not based on the configuration requested, it appends True/False to a dictionary using the config_name as the key.
         :param requested_config: Configuration to be added/removed from Access Rule
@@ -627,7 +627,7 @@ def main():
         new_config = []
         if fmc_config_name in _obj1.keys() and requested_config is not None:
 
-            # Call validate function to check that the requested config object is an existing fmc object
+            # Call validate function to check that the requested config object is an existing cisco_fmc object
             if requested_config == source_networks or destination_networks:
                 validate_net_obj_config(requested_config=requested_config, config_name=config_name)
             else:
@@ -695,7 +695,7 @@ def main():
         current_config = []
         if fmc_config_name in _obj1.keys() and requested_config is not None:
 
-            # Call validate function to check that the requested config object is an existing fmc objects
+            # Call validate function to check that the requested config object is an existing cisco_fmc objects
             validate_multi_obj_config(requested_config=requested_config, config_class=config_class, config_name=config_name)
 
             # rule exists, No objects of the specified type currently added, requested action for config is "add". Changed status set to True
@@ -738,7 +738,7 @@ def main():
 
     def single_obj_config_state(requested_config, config_class, fmc_config_name="", config_name=''):
         """
-        To be used when only a single fmc object can configured.
+        To be used when only a single cisco_fmc object can configured.
         This function checks current the state of a configuration for an access rule.
         If there is a need to change the state/or not based on the configuration requested, it appends True/False to a dictionary using the config_name as the key.
         :param requested_config: Configuration to be added/removed from Access Rule
@@ -750,7 +750,7 @@ def main():
 
         if fmc_config_name in _obj1.keys() and requested_config is not None:
 
-            # Call validate function to check that the requested config object is an existing fmc object
+            # Call validate function to check that the requested config object is an existing cisco_fmc object
             validate_single_obj_config(requested_config=requested_config, config_class=config_class, config_name=config_name)
 
             # rule exists, requested config object does not match current config object. Changed status set to True
@@ -795,8 +795,8 @@ def main():
 
     def validate_multi_obj_config(requested_config, config_class, config_name):
         """
-        To be used when validating multiple fmc objects.
-        Function validates that the requested configurations are existing fmc objects
+        To be used when validating multiple cisco_fmc objects.
+        Function validates that the requested configurations are existing cisco_fmc objects
         :param requested_config: Configuration to be added/removed from Access Rule
         :param config_class: fmcapi Class for the Configuration to be added to the Access Rule
         :param config_name: Configuration name in result dictionary
@@ -817,14 +817,14 @@ def main():
             if all(d):
                 return True
             else:
-                result = dict(failed=True, msg='Check that the {} are existing fmc objects'.format(config_name))
+                result = dict(failed=True, msg='Check that the {} are existing cisco_fmc objects'.format(config_name))
                 module.exit_json(**result)
                 return False
 
     def validate_single_obj_config(requested_config, config_class, config_name):
         """
-        To be used when validating single fmc object.
-        Function validates that the requested configurations are existing fmc objects
+        To be used when validating single cisco_fmc object.
+        Function validates that the requested configurations are existing cisco_fmc objects
         :param requested_config: Configuration to be added/removed from Access Rule
         :param config_class: fmcapi Class for the Configuration to be added to the Access Rule
         :param config_name: Configuration name in result dictionary
@@ -837,7 +837,7 @@ def main():
             config_obj = config_class(fmc=fmc1, name=requested_config)
             _config_obj = get_obj(config_obj)
             if 'items' in _config_obj:
-                result = dict(failed=True, msg='Check that the {} is an existing fmc object'.format(config_name))
+                result = dict(failed=True, msg='Check that the {} is an existing cisco_fmc object'.format(config_name))
                 module.exit_json(**result)
                 return False
             else:
@@ -846,7 +846,7 @@ def main():
     def validate_net_obj_config(requested_config, config_name):
         """
         It is a custom version of the 'validate_multi_obj_config' function
-        Function validates that the requested configurations are existing fmc network objects
+        Function validates that the requested configurations are existing cisco_fmc network objects
         :param requested_config: Configuration to be added/removed from Access Rule
         :param config_name: Configuration name in result dictionary
         :return: boolean
@@ -907,7 +907,7 @@ def main():
                     _literal_list.append(a)
 
             if not all(_obj_list):
-                result = dict(failed=True, msg='Check that the {} are existing fmc objects'.format(config_name))
+                result = dict(failed=True, msg='Check that the {} are existing cisco_fmc objects'.format(config_name))
                 module.exit_json(**result)
             elif not all(_literal_list):
                 result = dict(failed=True, msg='Check that the {} are valid literal addresses'.format(config_name))
@@ -1087,7 +1087,7 @@ def main():
             else:
                 pass
             if fmc_obj is None:
-                result = dict(failed=True, msg='An error occurred while sending request to fmc')
+                result = dict(failed=True, msg='An error occurred while sending request to cisco_fmc')
                 module.exit_json(**result)
             else:
                 pass

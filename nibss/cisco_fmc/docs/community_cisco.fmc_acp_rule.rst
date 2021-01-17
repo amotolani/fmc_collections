@@ -1,8 +1,8 @@
-.. _cisco.fmc.fmc_acp_rule:
+.. _nibss.cisco_fmc.acp_rule:
 
 
 **********************
-cisco.fmc.fmc_acp_rule
+nibss.cisco_fmc.acp_rule
 **********************
 
 

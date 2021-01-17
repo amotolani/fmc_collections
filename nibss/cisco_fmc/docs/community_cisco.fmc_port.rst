@@ -1,8 +1,8 @@
-.. _cisco.fmc.fmc_vlan:
+.. _nibss.cisco_fmc.port:
 
 
 *******************
-cisco.fmc.fmc_vlan
+nibss.cisco_fmc.port
 *******************
 
 

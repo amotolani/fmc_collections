@@ -1,8 +1,8 @@
-.. _cisco.fmc.fmc_security_zone:
+.. _nibss.cisco_fmc.network_group:
 
 
 ***************************
-cisco.fmc.fmc_security_zone
+nibss.cisco_fmc.network_group
 ***************************
 
 

@@ -8,14 +8,14 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: cisco.fmc.fmc_network
+module: nibss.cisco_fmc.network
 short_description: Create, Modify and Delete Cisco FMC network objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
 options:
   name:
     description:
-      - The name of the fmc object to be created, modified or deleted.
+      - The name of the cisco_fmc object to be created, modified or deleted.
     type: str
     required: true
   state:
@@ -29,7 +29,7 @@ options:
       - Allowed choices are Host, Network and Range
       - Use 'Host' to create, modify or delete an IP Host object
       - Use 'Range' to create, modify or delete an IP Address Range object
-      - Use 'Network' to create, modify or delete a Network Address fmc object
+      - Use 'Network' to create, modify or delete a Network Address cisco_fmc object
     type: str
     required: true
   fmc:
@@ -66,21 +66,21 @@ options:
 
 EXAMPLES = r'''
 - name: Create a Network object
-  cisco.fmc.fmc_network:
+  nibss.cisco_fmc.network:
     name: Sample-Network
     state: present
     network_type: Network
-    fmc: ciscofmc.sample.com
+    fmc: .sample.com
     value: 11.22.32.0/24
     username: admin
     password: Cisco1234
 
 - name: Create Host objects from a loop
-  cisco.fmc.fmc_network:
+  nibss.cisco_fmc.network:
     name: "{ { item.name } }"
     state: present
     network_type: Host
-    fmc: ciscofmc.sample.com
+    fmc: cisco.sample.com
     value: "{{item.value}}"
     username: admin
     password: Cisco1234
@@ -90,11 +90,11 @@ EXAMPLES = r'''
     - {name: Host2 , value: 10.10.10.4}
 
 - name: Create Range objects from a loop and deploy changes to devices
-  cisco.fmc.fmc_network:
+  nibss.cisco_fmc.network:
     name: "{ { item.name } }"
     state: present
     network_type: Range
-    fmc: ciscofmc.sample.com
+    fmc: cisco.sample.com
     value: "{{item.value}}"
     username: admin
     password: Cisco1234
@@ -104,11 +104,11 @@ EXAMPLES = r'''
     - {name: Range2 , value: 10.10.20.2-10.10.20.50}
 
 - name: Delete Host objects from a loop
-  cisco.fmc.fmc_network:
+  nibss.cisco_fmc.network:
     name: "{ { item.name } }"
     state: absent
     network_type: Host
-    fmc: ciscofmc.sample.com
+    fmc: cisco.sample.com
     value: "{{item.value}}"
     username: admin
     password: Cisco1234
@@ -141,7 +141,7 @@ def main():
     name = module.params['name']
     network_type = module.params['network_type']
     value = module.params['value']
-    fmc = module.params['fmc']
+    fmc = module.params['cisco_fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -273,7 +273,7 @@ def main():
             else:
                 pass
             if fmc_obj is None:
-                result = dict(failed=True, msg='An error occurred while sending request to fmc')
+                result = dict(failed=True, msg='An error occurred while sending request to cisco_fmc')
                 module.exit_json(**result)
 
     result = dict(changed=changed)
