@@ -11,3 +11,5 @@ tags:  [fmc, cisco, networking]
 repository: https://github.com/nibss-dev/fmc_collections
 documentation: https://github.com/nibss-dev/fmc_collections/tree/master/docs
 issues: https://github.com/nibss-dev/fmc_collections/issues
+build_ignore:
+  - changelogs
