@@ -8,7 +8,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.network_group
+module: amotolani.cisco_fmc.network_group
 short_description: Create, Modify and Delete Cisco FMC network objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
@@ -68,7 +68,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create Network Group with existing network objects and deploy changes
-  nibss.cisco_fmc.network_group:
+  amotolani.cisco_fmc.network_group:
     name: Network-Group-1
     state: present
     fmc: cisco.sample.com
@@ -79,7 +79,7 @@ EXAMPLES = r'''
     group_objects: MySampleHost
 
 - name: Delete Network Group
-  nibss.cisco_fmc.network_group:
+  amotolani.cisco_fmc.network_group:
     name: Network-Group-1
     state: absent
     fmc: cisco.sample.com
@@ -87,7 +87,7 @@ EXAMPLES = r'''
     password: Cisco1234
 
 - name: Create Network Group specifying network addresses than are not cisco_fmc objects
-  nibss.cisco_fmc.network_group:
+  amotolani.cisco_fmc.network_group:
     name: Network-Group-2
     state: present
     fmc: cisco.sample.com
@@ -97,7 +97,7 @@ EXAMPLES = r'''
     group_literals: 20.1.2.2,10.32.11.0/24,34.2.2.1-34.2.2.200
 
 - name: Remove address and network object from Network Group
-  nibss.cisco_fmc.network_group:
+  amotolani.cisco_fmc.network_group:
     name: Network-Group-2
     state: present
     fmc: cisco.sample.com
@@ -135,7 +135,7 @@ def main():
     action = module.params['action']
     group_literals = module.params['group_literals']
     group_objects = module.params['group_objects']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']

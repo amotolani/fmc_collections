@@ -7,7 +7,7 @@ import requests
 
 DOCUMENTATION = r'''
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.acp_rule
+module: amotolani.cisco_fmc.acp_rule
 short_description: 'Create, Modify and Delete Cisco FMC Access Rule objects'
 description:
   - 'Create, Modify and Delete Cisco FMC network objects.'
@@ -313,7 +313,7 @@ options:
 
 EXAMPLES = r'''    
 - name: Delete Access Policy Rule
-  nibss.cisco_fmc.acp_rule:
+  amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: absent
     fmc: cisco.sample.com
@@ -326,7 +326,7 @@ EXAMPLES = r'''
     acp: test
     
 - name: Create Access Policy Rule
-  nibss.cisco_fmc.acp_rule:
+  amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
     state: present
     fmc: ciscofmc.sample.com
@@ -501,7 +501,7 @@ def main():
     source_security_group_tags = module.params['source_security_group_tags']
     destination_security_group_tags = module.params['destination_security_group_tags']
     acp = module.params['acp']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']

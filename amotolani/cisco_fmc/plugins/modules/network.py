@@ -8,7 +8,7 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.network
+module: amotolani.cisco_fmc.network
 short_description: Create, Modify and Delete Cisco FMC network objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
@@ -66,7 +66,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create a Network object
-  nibss.cisco_fmc.network:
+  amotolani.cisco_fmc.network:
     name: Sample-Network
     state: present
     network_type: Network
@@ -76,7 +76,7 @@ EXAMPLES = r'''
     password: Cisco1234
 
 - name: Create Host objects from a loop
-  nibss.cisco_fmc.network:
+  amotolani.cisco_fmc.network:
     name: "{ { item.name } }"
     state: present
     network_type: Host
@@ -90,7 +90,7 @@ EXAMPLES = r'''
     - {name: Host2 , value: 10.10.10.4}
 
 - name: Create Range objects from a loop and deploy changes to devices
-  nibss.cisco_fmc.network:
+  amotolani.cisco_fmc.network:
     name: "{ { item.name } }"
     state: present
     network_type: Range
@@ -104,7 +104,7 @@ EXAMPLES = r'''
     - {name: Range2 , value: 10.10.20.2-10.10.20.50}
 
 - name: Delete Host objects from a loop
-  nibss.cisco_fmc.network:
+  amotolani.cisco_fmc.network:
     name: "{ { item.name } }"
     state: absent
     network_type: Host
@@ -141,7 +141,7 @@ def main():
     name = module.params['name']
     network_type = module.params['network_type']
     value = module.params['value']
-    fmc = module.params['cisco_fmc']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']

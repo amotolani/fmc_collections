@@ -1,8 +1,8 @@
-.. _nibss.cisco_fmc.acp_rule:
+.. _amotolani.cisco_fmc.acp_rule:
 
 
 **********************
-nibss.cisco_fmc.acp_rule
+amotolani.cisco_fmc.acp_rule
 **********************
 
 

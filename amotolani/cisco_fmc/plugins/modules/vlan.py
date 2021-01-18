@@ -7,35 +7,34 @@ import requests
 DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
-module: nibss.cisco_fmc.port
-short_description: Create, Modify and Delete Cisco FMC port objects
+module: amotolani.cisco_fmc.vlan
+short_description: Create, Modify and Delete Cisco FMC vlan objects
 description:
-  - Create, Modify and Delete Cisco FMC port objects.
+  - Create, Modify and Delete Cisco FMC vlan objects.
 options:
   name:
     description:
-      - The name of the cisco_fmc port object to be created, modified or deleted.
+      - The name of the cisco_fmc object to be created, modified or deleted.
     type: str
     required: true
   state:
     description:
-      - Whether to create/modify (C(present)), or remove (C(absent)) an object.
+      - Whether to create/modify (C(present)), or remove (C(absent)) object.
     type: str
     required: true
-  protocol:
+  end_start:
     description:
-      - The network port protocol.
-      - Supported choices are TCP and UDP
+      - Lower VLAN number in range
     type: str
-    required: true
+    required: false
+  vlan_start:
+    description:
+      - Upper VLAN number in range
+    type: str
+    required: false
   fmc:
     description:
       - IP address or FQDN of Cisco FMC.
-    type: str
-    required: true
-  port:
-    description:
-      - Port/Port Range value of cisco_fmc object.
     type: str
     required: true
   username:
@@ -58,27 +57,25 @@ options:
 '''
 
 EXAMPLES = r'''
-- name: Create Port objects and deploy changes
-  nibss.cisco_fmc.port:
+- name: Create Vlan objects and deploy changes
+  amotolani.cisco_fmc.vlan:
     name: "{{item.name}}"
     state: present
-    port: "{{item.port}}"
-    fmc: cisco.sample.com
-    protocol: "{{item.protocol}}"
+    vlan_start: "{{item.vlan_start}}"
+    fmc: ciscofmc.sample.com
+    vlan_end: "{{item.vlan_end}}"
     username: admin
     password: Cisco1234
     auto_deploy: True
   loop:
-    - {name: port1 , port: 10100 , protocol: UDP}
-    - {name: port2 , port: 11001-11004, protocol: TCP}
+    - {name: vlan1 , vlan_start: 111 , vlan_end: 222}
+    - {name: vlan2 , vlan_start: 333 , vlan_end: 444}
 
-- name: Delete Port objects
-  nibss.cisco_fmc.port:
-    name: ApplicationPort
+- name: Delete Vlan objects
+  amotolani.cisco_fmc.vlan:
+    name: vlan1
     state: absent
-    port: 7000
-    fmc: cisco.sample.com
-    protocol: TCP
+    fmc: ciscofmc.sample.com
     username: admin
     password: Cisco1234
 '''
@@ -89,14 +86,17 @@ def main():
         argument_spec=dict(
             state=dict(type='str', choices=['present', 'absent'], required=True),
             name=dict(type='str', required=True),
-            port=dict(type='str', required=True),
-            protocol=dict(type='str', choices=['UDP', 'TCP'], required=True),
+            vlan_start=dict(type='str'),
+            vlan_end=dict(type='str'),
             fmc=dict(type='str', required=True),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True,  no_log=True),
             auto_deploy=dict(type='bool', default=False)
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
+        required_if=[
+            ["state", "present", ["vlan_start", "vlan_end"]]
+        ]
     )
     changed = False
     result = dict(
@@ -104,12 +104,13 @@ def main():
     )
     requested_state = module.params['state']
     name = module.params['name']
-    port = module.params['port']
-    protocol = module.params['protocol']
-    fmc = module.params['cisco_fmc']
+    vlan_start = module.params['vlan_start']
+    vlan_end = module.params['vlan_end']
+    fmc = module.params['fmc']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
+    vlan_data = {'startTag': vlan_start, 'endTag': vlan_end}
 
 # Define Operation Functions #
 
@@ -129,18 +130,16 @@ def main():
         a = obj.put()
         return a
 
-    def validate_port(value):
+    def validate_vlans(start_vlan, end_vlan=""):
         """
-            We need to check the Port Number is valid.
-            :param value: Port Number/Port Range
-            :return: boolean
-            """
-        d = []
-        for port_number in value.split('-'):
-            d.append(port_number)
-        if len(d) == 1 and int(d[0]) in range(65536):
-            return True
-        elif len(d) == 2 and int(d[0]) in range(65536) and int(d[1]) in range(65536) and int(d[1]) > int(d[0]):
+        Validate that the start_vlan and end_vlan numbers are in 1 - 4094 range.  If not, then return False
+        :param start_vlan: (int) Lower VLAN number in range.
+        :param end_vlan: (int) Upper VLAN number in range.
+        :return: boolean
+        """
+        logging.debug("In validate_vlans() helper_function.")
+
+        if int(start_vlan) in range(4096) and int(end_vlan) in range(4096) and int(end_vlan) > int(start_vlan):
             return True
         else:
             return False
@@ -168,20 +167,20 @@ def main():
 
     with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
 
-        # Instantiate Objects with values if valid Port/Port Range is provided
-        if validate_port(port):
-            obj1 = ProtocolPortObjects(fmc=fmc1, name=name, port=port, protocol=protocol)
+        # Instantiate Objects with values if valid vlan range is provided
+        if validate_vlans(vlan_start, vlan_end):
+            obj1 = VlanTags(fmc=fmc1, name=name, data=vlan_data)
         else:
-            result = dict(failed=True, msg='Provided Port/Port Range is not valid')
+            result = dict(failed=True, msg='Provided vlan range is not valid')
             module.exit_json(**result)
         
         # Check existing state of the object
         _obj1 = get_obj(obj1)
         if requested_state == 'present':
-            if 'items' in _obj1.keys():
+            if 'data' not in _obj1.keys():
                 _create_obj = True
                 changed = True
-            elif _obj1['port'] != port or _obj1['name'] != name:
+            elif _obj1['data']['startTag'] != int(vlan_start) or _obj1['data']['endTag'] != int(vlan_end) or _obj1['name'] != name:
                 _create_obj = False
                 changed = True 
         else:
@@ -195,7 +194,7 @@ def main():
             if requested_state == 'present' and _create_obj is True:
                 fmc_obj = create_obj(obj1)
             elif requested_state == 'present' and _create_obj is False:
-                obj1 = ProtocolPortObjects(fmc=fmc1, id=_obj1['id'], name=name, port=port, protocol=protocol)
+                obj1 = VlanTags(fmc=fmc1, id=_obj1['id'], name=name, data=vlan_data)
                 fmc_obj = update_obj(obj1)
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
