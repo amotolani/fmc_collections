@@ -850,7 +850,7 @@ def main():
         :param config_name: Configuration name in result dictionary
         :return: boolean
         """
-        _obj_list, net_obj, ip_obj, range_obj = ([] for i in range(4))
+        _obj_list, net_obj, ip_obj, range_obj, net_group_obj = ([] for i in range(5))
         _literal_list, net_literal, ip_literal, range_literal = ([] for i in range(4))
 
         if requested_config is None:
@@ -882,8 +882,16 @@ def main():
                         a = True
                     ip_obj.append(a)
 
+                    config_obj = NetworkGroups(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                    net_group_obj.append(a)
+
                     yy = requested_config['name'].index(i)
-                    if net_obj[yy] or range_obj[yy] or ip_obj[yy]:
+                    if net_obj[yy] or range_obj[yy] or ip_obj[yy] or net_group_obj[yy]:
                         a = True
                     else:
                         a = False

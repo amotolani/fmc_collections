@@ -10,6 +10,13 @@ This collection has been tested against Cisco FMC version 6.3.0.
 This collection has been tested against following Ansible versions: **>=2.9.10,<2.11**.
 <!--end requires_ansible-->
 
+## Requirements
+
+This collection relies heavily on the python [fmcapi](https://pypi.org/project/fmcapi/) package to interact with the cisco fmc api \
+Run the below command to install via pip
+```bash
+pip3 install fmcapi
+```
 
 ### Modules
 Name | Description
@@ -34,7 +41,7 @@ collections_paths = ./
 ### Install the latest version from GitHub
 
 ```bash
-ansible-galaxy collection install git@github.com:nibss-dev/fmc_collections.git#/amotolani/cisco_fmc
+ansible-galaxy collection install git@github.com:amotolani-dev/fmc_collections.git#/amotolani/cisco_fmc
 ```
 
 
@@ -78,7 +85,7 @@ The following example task creates Host fmc objects from a loop and deploys this
 * [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
-We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [nibss cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
+We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
 
 
 ### Code of Conduct
@@ -100,7 +107,7 @@ Release notes are available [here](https://github.com/nibss-dev/fmc_collections/
 - [Ansible Collection overview](https://github.com/fmc_collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
-- [Ansible nibss code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
+- [Ansible code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 
 ## Licensing
 
@@ -109,6 +116,3 @@ GNU General Public License v3.0 or later.
 See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
 
 
-# Notes
-
-This collection relies heavily on the python [fmcapi](https://pypi.org/project/fmcapi/) package to interact with the cisco fmc api
