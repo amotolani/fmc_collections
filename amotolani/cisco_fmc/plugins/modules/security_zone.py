@@ -6,7 +6,7 @@ DOCUMENTATION = r'''
 ---
 author: Adelowo David (@amotolani)
 module: amotolani.cisco_fmc.security_zone
-short_description: Create, Modify and Delete Cisco FMC network objects
+short_description: Create, Modify and Delete Cisco FMC Security Zone objects
 description:
   - Create, Modify and Delete Cisco FMC network objects.
 options:
@@ -20,20 +20,14 @@ options:
       - Whether to create/modify (C(present)), or remove (C(absent)) an object.
     type: str
     required: true
-  protocol:
+  interface_mode:
     description:
-      - The network port protocol.
-      - Supported choices are TCP and UDP
+      - Supported choices are ['routed', 'switched', 'asa', 'inline', 'passive']
     type: str
     required: true
   fmc:
     description:
       - IP address or FQDN of Cisco FMC.
-    type: str
-    required: true
-  port:
-    description:
-      - Port/Port Range value of cisco_fmc object.
     type: str
     required: true
   username:
@@ -58,25 +52,20 @@ options:
 EXAMPLES = r'''
 - name: Create Security Zone objects and deploy changes
   amotolani.cisco_fmc.security_zone:
-    name: "{{item.name}}"
+    name: Zone1
     state: present
-    port: "{{item.port}}"
+    interface_mode: switched
     fmc: ciscofmc.sample.com
-    protocol: "{{item.protocol}}"
     username: admin
     password: Cisco1234
     auto_deploy: True
-  loop:
-    - {name: port1 , port: 10100 , protocol: UDP}
-    - {name: port2 , port: 11001-11004, protocol: TCP}
 
 - name: Delete  Security Zone objects
   amotolani.cisco_fmc.security_zone:
-    name: ApplicationPort
+    name: Zone-1
     state: absent
-    port: 7000
+    interface_mode: routed
     fmc: ciscofmc.sample.com
-    protocol: TCP
     username: admin
     password: Cisco1234
 '''
