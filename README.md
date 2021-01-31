@@ -12,7 +12,7 @@ This collection has been tested against following Ansible versions: **>=2.9.10,<
 
 ## Requirements
 
-This collection relies heavily on the python [fmcapi](https://pypi.org/project/fmcapi/) package to interact with the cisco fmc api
+This collection relies heavily on the python [fmcapi](https://pypi.org/project/fmcapi/) package to interact with the cisco fmc api \
 Run the below command to install via pip
 ```bash
 pip3 install fmcapi
