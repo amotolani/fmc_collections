@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
-## [1.0.5] - 2021-02-03
+## [1.0.6] - 2021-02-03
 
 ### Fixed
 - Fix Bug with Access Policy Module [Issue Link](https://github.com/nibss-dev/fmc_collections/issues/5)

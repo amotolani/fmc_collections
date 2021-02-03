@@ -506,12 +506,6 @@ def main():
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
 
-    # Removes empty strings from networks lists
-    source_networks['name'] = [i for i in source_networks['name'] if i]
-    destination_networks['name'] = [i for i in destination_networks['name'] if i]
-
-    source_networks['literal'] = [i for i in source_networks['literal'] if i]
-    destination_networks['literal'] = [i for i in destination_networks['literal'] if i]
 
     # Define useful Functions
     def get_obj(obj):
@@ -864,6 +858,7 @@ def main():
             return True
         else:
             if requested_config['name'] is not None:
+                requested_config['name'] = [i for i in requested_config['name'] if i]
                 for i in requested_config['name']:
                     config_obj = Networks(fmc=fmc1, name=i)
                     _config_obj = get_obj(config_obj)
@@ -903,7 +898,10 @@ def main():
                     else:
                         a = False
                     _obj_list.append(a)
+
             if requested_config['literal'] is not None or len(requested_config['literal']) != 0:
+                requested_config['literal'] = [i for i in requested_config['literal'] if i]
+
                 for i in requested_config['literal']:
                     p = validate_ip_range(i)
                     range_literal.append(p)
