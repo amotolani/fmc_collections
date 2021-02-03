@@ -385,7 +385,7 @@ def main():
                 options=dict(
                     action=dict(type='str', choices=['add', 'remove'], required=True),
                     name=dict(type='list'),
-                    literal=dict(type='list', default='')
+                    literal=dict(type='list')
                 )
             ),
             destination_networks=dict(
@@ -393,7 +393,7 @@ def main():
                 options=dict(
                     action=dict(type='str', choices=['add', 'remove'], required=True),
                     name=dict(type='list'),
-                    literal=dict(type='list', default='')
+                    literal=dict(type='list')
                 )
             ),
             vlan_tags=dict(
@@ -505,6 +505,13 @@ def main():
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
+
+    # Removes empty strings from networks lists
+    source_networks['name'] = [i for i in source_networks['name'] if i]
+    destination_networks['name'] = [i for i in destination_networks['name'] if i]
+
+    source_networks['literal'] = [i for i in source_networks['literal'] if i]
+    destination_networks['literal'] = [i for i in destination_networks['literal'] if i]
 
     # Define useful Functions
     def get_obj(obj):
@@ -896,8 +903,7 @@ def main():
                     else:
                         a = False
                     _obj_list.append(a)
-
-            if requested_config['literal'] is not None:
+            if requested_config['literal'] is not None or len(requested_config['literal']) != 0:
                 for i in requested_config['literal']:
                     p = validate_ip_range(i)
                     range_literal.append(p)
