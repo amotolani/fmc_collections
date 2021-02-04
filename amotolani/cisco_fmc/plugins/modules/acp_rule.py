@@ -899,23 +899,24 @@ def main():
                         a = False
                     _obj_list.append(a)
 
-            if requested_config['literal'] is not None or len(requested_config['literal']) != 0:
+            if requested_config['literal'] is not None:
+                # Fix for issue-#5 (Removes empty strings from literal list before validating addresses)
                 requested_config['literal'] = [i for i in requested_config['literal'] if i]
+                if len(requested_config['literal']) > 0:
+                    for i in requested_config['literal']:
+                        p = validate_ip_range(i)
+                        range_literal.append(p)
+                        q = validate_ip_address(i)
+                        ip_literal.append(q)
+                        w = validate_network_address(i)
+                        net_literal.append(w)
 
-                for i in requested_config['literal']:
-                    p = validate_ip_range(i)
-                    range_literal.append(p)
-                    q = validate_ip_address(i)
-                    ip_literal.append(q)
-                    w = validate_network_address(i)
-                    net_literal.append(w)
-
-                    yy = requested_config['literal'].index(i)
-                    if net_literal[yy] or range_literal[yy] or ip_literal[yy]:
-                        a = True
-                    else:
-                        a = False
-                    _literal_list.append(a)
+                        yy = requested_config['literal'].index(i)
+                        if net_literal[yy] or range_literal[yy] or ip_literal[yy]:
+                            a = True
+                        else:
+                            a = False
+                        _literal_list.append(a)
 
             if not all(_obj_list):
                 result = dict(failed=True, msg='Check that the {} are existing cisco_fmc objects'.format(config_name))
