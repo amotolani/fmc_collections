@@ -28,6 +28,7 @@ Name | Description
 [amotolani.cisco_fmc.port_group](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port_group.rst)|FMC Port Group Object Module
 [amotolani.cisco_fmc.vlan](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.vlan.rst)|FMC VLAN Object Module
 [amotolani.cisco_fmc.security_zone](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.security_zone.rst)|FMC Security Zone Object Module
+[amotolani.cisco_fmc.deploy](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.deploy.rst)|FMC Deploy Module
 
 <!--end collection content-->
 ## Installing this collection

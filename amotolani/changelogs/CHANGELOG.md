@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+## [1.0.8] - 2021-03-31
+
+### Added
+- Deploy Module
+
 ## [1.0.7] - 2021-02-03
 
 ### Fixed
