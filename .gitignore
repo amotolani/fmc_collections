@@ -1,2 +1,5 @@
 .idea
 venv
+ansible.cfg
+ansible_collections
+playbooks
