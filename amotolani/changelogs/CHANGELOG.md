@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
-## [1.0.9] - 2021-03-31
+## [1.0.9] - 2021-05-26
 
 ### Added
 - Improved module failure message. Failure message will now relay exact error from FMC API Call (fmcapi>=20210523.0 is required for this)
