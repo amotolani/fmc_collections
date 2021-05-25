@@ -14,7 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Fix bug on Network Group Module. [Issue Link](https://github.com/nibss-dev/fmc_collections/issues/8)
-- Fix bug on Network Group Module [Issue Link]()
 ## [1.0.8] - 2021-03-31
 
 ### Added
