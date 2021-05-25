@@ -58,13 +58,13 @@ def main():
 
     # Custom argument validations
     # More of these are needed
-    encodedbytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
-    encodedstr = str(encodedbytes, "utf-8")
+    encoded_bytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
+    encoded_str = str(encoded_bytes, "utf-8")
 
     url = "https://{}/api/fmc_platform/v1/auth/generatetoken".format(fmc)
     payload = {}
     headers = {
-        'Authorization': 'Basic {}'.format(encodedstr)
+        'Authorization': 'Basic {}'.format(encoded_str)
     }
 
     try:
@@ -83,7 +83,13 @@ def main():
         obj1    = DeploymentRequests(fmc=fmc1)
         fmc_obj = obj1.post()
         if fmc_obj is None:
-            result = dict(changed=False, msg='No deployment was done')
+            try:
+                # error_response attribute only available in fmcapi>=20210523.0
+                fmc_obj = fmc1.error_response
+                msg = fmc_obj["error"]["messages"][0]["description"]
+            except AttributeError:
+                msg = "An error occurred while sending request to cisco fmc"
+            result = dict(failed=True, msg=msg)
             module.exit_json(**result)
                 
     result = dict(changed=True)

@@ -159,13 +159,13 @@ def main():
 
     # Custom argument validations
     # More of these are needed
-    encodedbytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
-    encodedstr = str(encodedbytes, "utf-8")
+    encoded_bytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
+    encoded_str = str(encoded_bytes, "utf-8")
 
     url = "https://{}/api/fmc_platform/v1/auth/generatetoken".format(fmc)
     payload = {}
     headers = {
-        'Authorization': 'Basic {}'.format(encodedstr)
+        'Authorization': 'Basic {}'.format(encoded_str)
     }
 
     try:
@@ -202,8 +202,10 @@ def main():
 
         # Check existing state of the object
         _obj1 = get_obj(obj1)
-        current_config = []
         new_config = []
+        current_objects_config = []
+        current_literals_config = []
+
         if requested_state == 'present':
             current_state = 0
             if 'items' in _obj1.keys():
@@ -213,22 +215,28 @@ def main():
                 _create_obj = False
                 if "literals" in _obj1.keys() and group_literals is not None:
                     for a in _obj1['literals']:
-                        current_config.append(a['value'])
+                        current_literals_config.append(a['value'])
                     new_config = new_config + group_literals
 
                 if "objects" in _obj1.keys() and group_objects is not None:
                     for a in _obj1['objects']:
-                        current_config.append(a['name'])
+                        current_objects_config.append(a['name'])
                     new_config = new_config + group_objects
 
                 _requested_config_set = set(new_config)
-                _current_config_set = set(current_config)
+                _current_config_set = set(current_objects_config+current_literals_config)
                 _config_diff = _requested_config_set.difference(_current_config_set)
                 _config_intsct = _requested_config_set.intersection(_current_config_set)
+
                 if action == 'add' and len(_config_diff) > 0:
                     changed = True
+                    group_literals = group_literals + current_literals_config
+                    group_objects  = group_objects  + current_objects_config
+
                 elif action == 'remove' and len(_config_intsct) > 0:
                     changed = True
+                    group_literals = [i for i in current_literals_config if i not in group_literals]
+                    group_objects  = [i for i in current_objects_config if i not in group_objects]
                     if _config_intsct == _current_config_set:
                         result = dict(failed=True, msg='At least one member must exist in the port group')
                         module.exit_json(**result)
@@ -253,7 +261,7 @@ def main():
                         # obj1.unnamed_ports(action=action, value=port)
                 if group_objects is not None:
                     for port_object in group_objects:
-                        obj1.named_ports(action=action, name=port_object)
+                        obj1.named_ports(action='add', name=port_object)
                 if _create_obj is True:
                     fmc_obj = create_obj(obj1)
                 elif _create_obj is False:
@@ -261,7 +269,13 @@ def main():
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
             if fmc_obj is None:
-                result = dict(failed=True, msg='An error occurred while sending request to cisco_fmc')
+                try:
+                    # error_response attribute only available in fmcapi>=20210523.0
+                    fmc_obj = fmc1.error_response
+                    msg = fmc_obj["error"]["messages"][0]["description"]
+                except AttributeError:
+                    msg = "An error occurred while sending request to cisco fmc"
+                result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
 
     result = dict(changed=changed)
