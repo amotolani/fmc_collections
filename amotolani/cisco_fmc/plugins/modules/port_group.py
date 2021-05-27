@@ -116,7 +116,8 @@ def main():
     requested_state = module.params['state']
     name = module.params['name']
     action = module.params['action']
-    group_literals = module.params['group_literals']
+    # group_literals = module.params['group_literals']
+    group_literals = None
     group_objects = module.params['group_objects']
     fmc = module.params['fmc']
     username = module.params['username']
