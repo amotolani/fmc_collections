@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+## [1.1.0] - 2021-05-28
+
+### Fixed
+
+- Deploy Module throwing error when no deployment is done.
+- Port Group Module throwing validation errors for group literals
+
 ## [1.0.9] - 2021-05-26
 
 ### Added
