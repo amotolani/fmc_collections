@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import logging
+
 from fmcapi import *
 from ansible.module_utils.basic import AnsibleModule
 import fmcapi.api_objects.helper_functions
@@ -190,15 +192,103 @@ def main():
         else:
             return True
 
+    def validate_net_obj_config(requested_config, config_name):
+        """
+        It is a custom version of the 'validate_multi_obj_config' function
+        Function validates that the requested configurations are existing cisco_fmc network objects
+        :param requested_config: Configuration to be added/removed from Access Rule
+        :param config_name: Configuration name in result dictionary
+        :return: boolean
+        """
+        _obj_list, net_obj, ip_obj, range_obj, net_group_obj = ([] for i in range(5))
+        _literal_list, net_literal, ip_literal, range_literal = ([] for i in range(4))
+
+        # store all network group objects for use later
+        network_group_objects = list()
+
+        if requested_config is None:
+            return True
+        else:
+            if requested_config['name'] is not None:
+                requested_config['name'] = [i for i in requested_config['name'] if i]
+                for i in requested_config['name']:
+                    config_obj = Networks(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                    net_obj.append(a)
+
+                    config_obj = Ranges(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                    range_obj.append(a)
+
+                    config_obj = Hosts(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                    ip_obj.append(a)
+
+                    config_obj = NetworkGroups(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                        network_group_objects.append(i)
+                    net_group_obj.append(a)
+
+                    yy = requested_config['name'].index(i)
+                    if net_obj[yy] or range_obj[yy] or ip_obj[yy] or net_group_obj[yy]:
+                        a = True
+                    else:
+                        a = False
+                    _obj_list.append(a)
+
+            if requested_config['literal'] is not None:
+                # Fix for issue-#5 (Removes empty strings from literal list before validating addresses)
+                requested_config['literal'] = [i for i in requested_config['literal'] if i]
+                if len(requested_config['literal']) > 0:
+                    for i in requested_config['literal']:
+                        p = validate_ip_range(i)
+                        range_literal.append(p)
+                        q = validate_ip_address(i)
+                        ip_literal.append(q)
+                        w = validate_network_address(i)
+                        net_literal.append(w)
+
+                        yy = requested_config['literal'].index(i)
+                        if net_literal[yy] or range_literal[yy] or ip_literal[yy]:
+                            a = True
+                        else:
+                            a = False
+                        _literal_list.append(a)
+
+            if not all(_obj_list):
+                result = dict(failed=True, msg='Check that the {} are existing cisco fmc objects'.format(config_name))
+                module.exit_json(**result)
+            elif not all(_literal_list):
+                result = dict(failed=True, msg='Check that the {} are valid literal addresses'.format(config_name))
+                module.exit_json(**result)
+            else:
+                return network_group_objects
+
     # Custom argument validations
     # More of these are needed
-    encodedbytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
-    encodedstr = str(encodedbytes, "utf-8")
+    encoded_bytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
+    encoded_str = str(encoded_bytes, "utf-8")
 
     url = "https://{}/api/fmc_platform/v1/auth/generatetoken".format(fmc)
     payload = {}
     headers = {
-        'Authorization': 'Basic {}'.format(encodedstr)
+        'Authorization': 'Basic {}'.format(encoded_str)
     }
 
     try:
@@ -223,21 +313,13 @@ def main():
         else:
             pass
 
-        # Instantiate Objects with values if valid Port/Port Range is provided
-        if len(group_literals) > 0:
-            if all(validate_ip_address(i) or validate_ip_range(i) or validate_network_address(i) for i in
-                   group_literals):
-                obj1 = NetworkGroups(fmc=fmc1, name=name)
-            else:
-                result = dict(changed=False, msg='Group Members are not valid IP, IP Range or Network Addresses')
-                module.exit_json(**result)
-        else:
-            obj1 = NetworkGroups(fmc=fmc1, name=name)
+        obj1 = NetworkGroups(fmc=fmc1, name=name)
 
         # Check existing state of the object
         _obj1 = get_obj(obj1)
-        current_config = []
         new_config = []
+        current_objects_config = []
+        current_literals_config = []
         if requested_state == 'present':
             if 'items' in _obj1.keys():
                 changed = True
@@ -246,33 +328,50 @@ def main():
                 _create_obj = False
                 if "literals" in _obj1.keys() and group_literals is not None :
                     for a in _obj1['literals']:
-                        current_config.append(a['value'])
+                        current_literals_config.append(a['value'])
                     new_config = new_config + group_literals
 
                 if "objects" in _obj1.keys() and group_objects is not None:
                     for a in _obj1['objects']:
-                        current_config.append(a['name'])
+                        current_objects_config.append(a['name'])
                     new_config = new_config + group_objects
 
                 _requested_config_set = set(new_config)
-                _current_config_set = set(current_config)
+                _current_config_set = set(current_objects_config+current_literals_config)
                 _config_diff = _requested_config_set.difference(_current_config_set)
                 _config_intsct = _requested_config_set.intersection(_current_config_set)
+
+                # if diff is gt than 0, then combine requested objects/literals and current objects/literals for posting to fmc api
                 if action == 'add' and len(_config_diff) > 0:
                     changed = True
+                    group_literals = group_literals + current_literals_config
+                    group_objects  = group_objects  + current_objects_config
+
+                # if intersect is gt than 0, then remove requested objects/literals from current objects/literals for posting to fmc api
                 elif action == 'remove' and len(_config_intsct) > 0:
                     changed = True
+                    group_literals = [i for i in current_literals_config if i not in group_literals]
+                    group_objects  = [i for i in current_objects_config if i not in group_objects]
                     if _config_intsct == _current_config_set:
                         result = dict(failed=True, msg='At least one member must exist in the network group')
                         module.exit_json(**result)
         else:
             if 'items' in _obj1.keys():
                 changed = False
+                _create_obj = False
             else:
                 changed = True
 
+        requested_config = {
+            "literal": group_literals,
+            "name": group_objects
+        }
+
+        # validate requested objects/literals and get the network groups amongst the requested objects
+        network_groups = validate_net_obj_config(requested_config=requested_config, config_name="Network Group Members")
+
         # if Object already exists, Instantiate object again with id. This is necessary for using PUT method
-        if _create_obj is False:
+        if _create_obj is False and changed is True:
             obj1 = NetworkGroups(fmc=fmc1, id=_obj1['id'], name=name)
         else:
             pass
@@ -282,10 +381,12 @@ def main():
             if requested_state == 'present':
                 if group_literals is not None:
                     for network in group_literals:
-                        obj1.unnamed_networks(action=action, value=network)
+                        obj1.unnamed_networks(action='add', value=network)
                 if group_objects is not None:
                     for network_object in group_objects:
-                        obj1.named_networks(action=action, name=network_object)
+                        obj1.named_networks(action='add', name=network_object)
+                    for network_group_object in network_groups:
+                        obj1.named_networks(action='addgroup', name=network_group_object)
                 if _create_obj is True:
                     fmc_obj = create_obj(obj1)
                 elif _create_obj is False:
@@ -293,7 +394,13 @@ def main():
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
             if fmc_obj is None:
-                result = dict(failed=True, msg='An error occurred while sending request to cisco_fmc')
+                try:
+                    # error_response attribute only available in fmcapi>=20210523.0
+                    fmc_obj = fmc1.error_response
+                    msg = fmc_obj["error"]["messages"][0]["description"]
+                except AttributeError:
+                    msg = "An error occurred while sending request to cisco fmc"
+                result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
 
     result = dict(changed=changed)

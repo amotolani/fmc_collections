@@ -148,7 +148,13 @@ def main():
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
             if fmc_obj is None:
-                result = dict(failed=True, msg='An error occurred while sending request to cisco_fmc')
+                try:
+                    # error_response attribute only available in fmcapi>=20210523.0
+                    fmc_obj = fmc1.error_response
+                    msg = fmc_obj["error"]["messages"][0]["description"]
+                except AttributeError:
+                    msg = "An error occurred while sending request to cisco fmc"
+                result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
                 
     result = dict(changed=changed)
