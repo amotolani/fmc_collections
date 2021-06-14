@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+## [1.1.1] - 2021-06-14
+
+### Fixed
+- Relocate Repository 
+
 ## [1.1.0] - 2021-05-28
 
 ### Fixed
@@ -20,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Progressively add/remove objects and literals from port groups and network groups
 
 ### Fixed
-- Fix bug on Network Group Module. [Issue Link](https://github.com/nibss-dev/fmc_collections/issues/8)
+- Fix bug on Network Group Module. [Issue Link](https://github.com/amotolani/fmc_collections/issues/8)
 ## [1.0.8] - 2021-03-31
 
 ### Added
@@ -29,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.0.7] - 2021-02-03
 
 ### Fixed
-- Fix Source/Destination literal network Bug on Access Policy Module [Issue Link](https://github.com/nibss-dev/fmc_collections/issues/5)
+- Fix Source/Destination literal network Bug on Access Policy Module [Issue Link](https://github.com/amotolani/fmc_collections/issues/5)
 
 ## [1.0.4] - 2021-01-31
 

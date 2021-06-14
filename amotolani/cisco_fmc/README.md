@@ -21,14 +21,14 @@ pip3 install fmcapi
 ### Modules
 Name | Description
 --- | ---
-[amotolani.cisco_fmc.acp_rule](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.acp_rule.rst)|FMC Access Rule Module
-[amotolani.cisco_fmc.network](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network.rst)|FMC Network Object Module
-[amotolani.cisco_fmc.network_group](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network_group.rst)|FMC Network Group Object Module
-[amotolani.cisco_fmc.port](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port.rst)|FMC Port Object Module
-[amotolani.cisco_fmc.port_group](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port_group.rst)|FMC Port Group Object Module
-[amotolani.cisco_fmc.vlan](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.vlan.rst)|FMC VLAN Object Module
-[amotolani.cisco_fmc.security_zone](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.security_zone.rst)|FMC Security Zone Object Module
-[amotolani.cisco_fmc.deploy](https://github.com/nibss-dev/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.deploy.rst)|FMC Deploy Module
+[amotolani.cisco_fmc.acp_rule](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.acp_rule.rst)|FMC Access Rule Module
+[amotolani.cisco_fmc.network](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network.rst)|FMC Network Object Module
+[amotolani.cisco_fmc.network_group](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.network_group.rst)|FMC Network Group Object Module
+[amotolani.cisco_fmc.port](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port.rst)|FMC Port Object Module
+[amotolani.cisco_fmc.port_group](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.port_group.rst)|FMC Port Group Object Module
+[amotolani.cisco_fmc.vlan](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.vlan.rst)|FMC VLAN Object Module
+[amotolani.cisco_fmc.security_zone](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.security_zone.rst)|FMC Security Zone Object Module
+[amotolani.cisco_fmc.deploy](https://github.com/amotolani/fmc_collections/blob/master/amotolani/cisco_fmc/docs/amotolani.cisco_fmc.deploy.rst)|FMC Deploy Module
 
 <!--end collection content-->
 ## Installing this collection
@@ -86,7 +86,7 @@ The following example task creates Host fmc objects from a loop and deploys this
 * [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
-We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [cisco_fmc collection repository](https://github.com/nibss-dev/fmc_collections/). 
+We are seeking contributions to help improve this collection. If you find problems, or a way to make it better, please open an issue or create a PR against the [cisco_fmc collection repository](https://github.com/amotolani/fmc_collections/). 
 
 
 ### Code of Conduct
@@ -96,7 +96,7 @@ Please read and familiarize yourself with this document.
 
 ## Release notes
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
-Release notes are available [here](https://github.com/nibss-dev/fmc_collections/blob/master/changelogs/CHANGELOG.rst).
+Release notes are available [here](https://github.com/amotolani/fmc_collections/blob/master/changelogs/CHANGELOG.rst).
 
 ## Roadmap
 
