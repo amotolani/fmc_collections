@@ -208,7 +208,6 @@ def main():
         current_literals_config = []
 
         if requested_state == 'present':
-            current_state = 0
             if 'items' in _obj1.keys():
                 changed = True
                 _create_obj = True
@@ -217,13 +216,12 @@ def main():
                 if "literals" in _obj1.keys() and group_literals is not None:
                     for a in _obj1['literals']:
                         current_literals_config.append(a['value'])
-                    new_config = new_config + group_literals
 
                 if "objects" in _obj1.keys() and group_objects is not None:
                     for a in _obj1['objects']:
                         current_objects_config.append(a['name'])
-                    new_config = new_config + group_objects
 
+                new_config = group_literals + group_objects
                 _requested_config_set = set(new_config)
                 _current_config_set = set(current_objects_config+current_literals_config)
                 _config_diff = _requested_config_set.difference(_current_config_set)

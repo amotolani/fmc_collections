@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+## [1.1.2] - 2021-06-15
+
+### Fixed
+
+- Fix Bug in Network Group Module, Where members are not added if no member of same type (literals/objects) exist in the current Network Group [Issue link](https://github.com/amotolani/fmc_collections/issues/2)
+- Fix Bug in Port Group Module, Where members are not added if no member of same type (literals/objects) exist in the current Port Group. [Issue link](https://github.com/amotolani/fmc_collections/issues/2)
+
 ## [1.1.1] - 2021-06-14
 
 ### Fixed

@@ -3,4 +3,4 @@ venv
 ansible.cfg
 ansible_collections
 playbooks
-args.txt
+*.txt
