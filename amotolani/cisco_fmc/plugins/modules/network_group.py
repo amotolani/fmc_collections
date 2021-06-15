@@ -326,16 +326,15 @@ def main():
                 _create_obj = True
             else:
                 _create_obj = False
-                if "literals" in _obj1.keys() and group_literals is not None :
+                if "literals" in _obj1.keys() and group_literals is not None:
                     for a in _obj1['literals']:
                         current_literals_config.append(a['value'])
-                    new_config = new_config + group_literals
 
                 if "objects" in _obj1.keys() and group_objects is not None:
                     for a in _obj1['objects']:
                         current_objects_config.append(a['name'])
-                    new_config = new_config + group_objects
 
+                new_config = group_literals + group_objects
                 _requested_config_set = set(new_config)
                 _current_config_set = set(current_objects_config+current_literals_config)
                 _config_diff = _requested_config_set.difference(_current_config_set)
