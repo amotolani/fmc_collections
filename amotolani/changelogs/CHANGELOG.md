@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+##[1.1.3] - 2022-04-19
+
+### Added
+- New Option to add Port Groups as source and destination ports for Access Rules [Issue Link](https://github.com/amotolani/fmc_collections/issues/5)
+
 ## [1.1.2] - 2021-06-15
 
 ### Fixed

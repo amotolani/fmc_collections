@@ -185,6 +185,40 @@ options:
           - FMC Port objects to add to configuration
         type: str
         required: false
+  source_port_groups:
+    description:
+      - Source Port Groups targeted by access rule
+    type: dict
+    required: false
+    options:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Port Group objects to add to configuration
+        type: str
+        required: false
+  destination_ports:
+    description:
+      - Destination Port Groups targeted by access rule
+    type: dict
+    required: false
+    options:
+      action:
+        description:
+          - Action to be applied to configuration elements
+          - Allowed values [''add'', ''remove'']
+        type: str
+        required: true
+      name:
+        description:
+          - FMC Port Group objects to add to configuration
+        type: str
+        required: false
   source_zones:
     description:
       - Source Zones targeted by access rule
@@ -417,6 +451,20 @@ def main():
                     name=dict(type='list')
                 )
             ),
+            source_port_groups=dict(
+                type='dict',
+                options=dict(
+                    action=dict(type='str', choices=['add', 'remove'], required=True),
+                    name=dict(type='list')
+                )
+            ),
+            destination_port_groups=dict(
+                type='dict',
+                options=dict(
+                    action=dict(type='str', choices=['add', 'remove'], required=True),
+                    name=dict(type='list')
+                )
+            ),
             source_zones=dict(
                 type='dict',
                 options=dict(
@@ -493,6 +541,8 @@ def main():
     destination_networks = module.params['destination_networks']
     source_ports = module.params['source_ports']
     destination_ports = module.params['destination_ports']
+    source_port_groups = module.params['source_port_groups']
+    destination_port_groups = module.params['destination_port_groups']
     intrusion_policy = module.params['intrusion_policy']
     source_zones = module.params['source_zones']
     destination_zones = module.params['destination_zones']
@@ -975,6 +1025,8 @@ def main():
                 validate_multi_obj_config(requested_config=vlan_tags, config_name='vlan_tags', config_class=VlanTags)
                 validate_multi_obj_config(requested_config=source_ports, config_name='source_ports', config_class=ProtocolPortObjects)
                 validate_multi_obj_config(requested_config=destination_ports, config_name='destination_ports', config_class=ProtocolPortObjects)
+                validate_multi_obj_config(requested_config=source_port_groups, config_name='source_port_groups', config_class=PortObjectGroups)
+                validate_multi_obj_config(requested_config=destination_port_groups, config_name='destination_port_groups', config_class=PortObjectGroups)
                 validate_net_obj_config(requested_config=source_networks, config_name='source_networks')
                 validate_net_obj_config(requested_config=destination_networks, config_name='destination_networks')
                 validate_multi_obj_config(requested_config=source_zones, config_name='source_zones', config_class=SecurityZones)
@@ -993,6 +1045,8 @@ def main():
                 multi_obj_config_state(requested_config=vlan_tags, fmc_config_name="vlanTags", config_name='vlan_tags', config_class=VlanTags)
                 multi_obj_config_state(requested_config=source_ports, fmc_config_name="sourcePorts", config_name='source_ports', config_class=ProtocolPortObjects)
                 multi_obj_config_state(requested_config=destination_ports, fmc_config_name="destinationPorts", config_name='destination_ports', config_class=ProtocolPortObjects)
+                multi_obj_config_state(requested_config=source_port_groups, fmc_config_name="sourcePorts", config_name='source_port_groups', config_class=PortObjectGroups)
+                multi_obj_config_state(requested_config=destination_port_groups, fmc_config_name="destinationPorts", config_name='destination_port_groups', config_class=PortObjectGroups)
                 net_obj_config_state(requested_config=source_networks, fmc_config_name="sourceNetworks", config_name='source_networks', config_class=Networks)
                 net_obj_config_state(requested_config=destination_networks, fmc_config_name="destinationNetworks", config_name='destination_networks', config_class=Networks)
                 multi_obj_config_state(requested_config=source_zones, fmc_config_name="sourceZones", config_name='source_zones', config_class=SecurityZones)
@@ -1039,6 +1093,12 @@ def main():
                 if destination_ports is not None:
                     for i in destination_ports['name']:
                         obj1.destination_port(action=destination_ports['action'], name=i)
+                if source_port_groups is not None:
+                    for i in source_port_groups['name']:
+                        obj1.source_port(action=source_port_groups['action'], name=i)
+                if destination_port_groups is not None:
+                    for i in destination_port_groups['name']:
+                        obj1.destination_port(action=destination_port_groups['action'], name=i)
                 if source_networks is not None:
                     if source_networks['name'] is not None:
                         for i in source_networks['name']:

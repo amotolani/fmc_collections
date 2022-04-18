@@ -4,3 +4,4 @@ ansible.cfg
 ansible_collections
 playbooks
 *.txt
+args.json
