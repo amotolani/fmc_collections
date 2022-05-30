@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+##[1.1.4] - 2022-05-26
+
+### Added
+- New Option to manipulate FQDN type network objects [Issue Link](https://github.com/amotolani/fmc_collections/issues/7)
+
+## [Released]
+
 ##[1.1.3] - 2022-04-19
 
 ### Added

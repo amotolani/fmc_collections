@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from fmcapi import *
+from pyvalidator import is_fqdn
 from ansible.module_utils.basic import AnsibleModule
 import fmcapi.api_objects.helper_functions
 import base64
@@ -26,10 +27,11 @@ options:
   network_type:
     description:
       - The network object type.
-      - Allowed choices are Host, Network and Range
+      - Allowed choices are Host, Network, Range, and FQDN
       - Use 'Host' to create, modify or delete an IP Host object
       - Use 'Range' to create, modify or delete an IP Address Range object
       - Use 'Network' to create, modify or delete a Network Address cisco_fmc object
+      - Use 'FQDN' to create, modify or delete an FQDN Host object
     type: str
     required: true
   fmc:
@@ -42,7 +44,8 @@ options:
       - FMC network object value.
       - For network type 'Host', accepted value is a valid IPv4 address (1.1.1.1)
       - For network type 'Range',  accepted value is a valid IPv4 address range (1.1.1.1-1.1.1.255)
-      - For network type 'Network',  accepted value is valid IPv4 network address (1.1.1.0/24) 
+      - For network type 'Network',  accepted value is valid IPv4 network address (1.1.1.0/24)
+      - For network type 'FQDN', accepted value is a valid FQDN (www.example.com, sub.example.com, sub.sub.example.com) FTD does NOT accept wildcards
     type: str
     required: true
   username:
@@ -72,6 +75,16 @@ EXAMPLES = r'''
     network_type: Network
     fmc: .sample.com
     value: 11.22.32.0/24
+    username: admin
+    password: Cisco1234
+
+- name: Create a FQDN object
+  amotolani.cisco_fmc.network:
+    name: Sample-FQDN
+    state: present
+    network_type: FQDN
+    fmc: .sample.com
+    value: sub.example.com
     username: admin
     password: Cisco1234
 
@@ -124,7 +137,7 @@ def main():
         argument_spec=dict(
             state=dict(type='str', choices=['present', 'absent'], required=True),
             name=dict(type='str', required=True),
-            network_type=dict(type='str', choices=['Host', 'Range', 'Network'], required=True),
+            network_type=dict(type='str', choices=['Host', 'Range', 'Network', 'FQDN'], required=True),
             value=dict(type='str', required=True),
             fmc=dict(type='str', required=True),
             username=dict(type='str', required=True),
@@ -155,7 +168,7 @@ def main():
     def create_obj(obj):
         a = obj.post()
         return a
-    
+
     def delete_obj(obj):
         a = obj.delete()
         return a
@@ -171,8 +184,8 @@ def main():
          :return: boolean
          """
         a = fmcapi.api_objects.helper_functions.is_ip(address)
-        return a 
-    
+        return a
+
     def validate_network_address(address):
         """
         We need to check the provided Network Address is valid.
@@ -180,7 +193,7 @@ def main():
         :return: boolean
         """
         a = fmcapi.api_objects.helper_functions.is_ip_network(address)
-        return a 
+        return a
 
     def validate_ip_range(ip_range):
         """
@@ -195,6 +208,17 @@ def main():
             return False
         else:
             return True
+
+    def validate_fqdn(fqdn):
+      """
+      We need to check that the provided input is valid.
+      Specifically, a fqdn that FTD can support. IE: No Wildcards
+      """
+      fqdn_options = {"require_tld": True, "allow_underscores": True,
+                  "allow_trailing_dot": False, "allow_numeric_tld": True,
+                  "allow_wildcard": False }
+      a = is_fqdn(fqdn, fqdn_options)
+      return a
 
     # Custom argument validations
     # More of these are needed
@@ -236,11 +260,17 @@ def main():
             if validate_network_address(value):
                 obj1 = Networks(fmc=fmc1, name=name, value=value)
             else:
-                result = dict(failed=True, msg='Provided value is not a valid network address ')
+                result = dict(failed=True, msg='Provided value is not a valid network address')
+                module.exit_json(**result)
+        elif network_type == 'FQDN':
+            if validate_fqdn(value):
+              obj1 = FQDNS(fmc=fmc1, name=name, value=value)
+            else:
+                result = dict(failed=True, msg='Provided value is not a valid FQDN for FTD')
                 module.exit_json(**result)
         else:
             pass
-        
+
         # Check existing state of the object
         _obj1 = get_obj(obj1)
         if requested_state == 'present':
@@ -249,7 +279,7 @@ def main():
                 changed = True
             elif _obj1['value'] != value or _obj1['name'] != name:
                 _create_obj = False
-                changed = True 
+                changed = True
         else:
             if 'items' in _obj1.keys():
                 changed = False
@@ -267,6 +297,8 @@ def main():
                     obj1 = Ranges(fmc=fmc1, id=_obj1['id'], name=name, value=value)
                 elif network_type == 'Network':
                     obj1 = Networks(fmc=fmc1, id=_obj1['id'], name=name, value=value)
+                elif network_type == 'FQDN':
+                    obj1 = FQDNS(fmc=fmc1, id=_obj1['id'], name=name, value=value)
                 fmc_obj = update_obj(obj1)
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
