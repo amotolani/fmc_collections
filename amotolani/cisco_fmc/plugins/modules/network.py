@@ -24,6 +24,11 @@ options:
       - Whether to create/modify (C(present)), or remove (C(absent)) an object.
     type: str
     required: true
+  description:
+    description:
+      - The description/comment of the cisco_fmc object.
+    type: str
+    required: false
   network_type:
     description:
       - The network object type.
@@ -137,6 +142,7 @@ def main():
         argument_spec=dict(
             state=dict(type='str', choices=['present', 'absent'], required=True),
             name=dict(type='str', required=True),
+            description=dict(type='str', required=False),
             network_type=dict(type='str', choices=['Host', 'Range', 'Network', 'FQDN'], required=True),
             value=dict(type='str', required=True),
             fmc=dict(type='str', required=True),
@@ -152,6 +158,7 @@ def main():
     )
     requested_state = module.params['state']
     name = module.params['name']
+    description = module.params['description']
     network_type = module.params['network_type']
     value = module.params['value']
     fmc = module.params['fmc']
@@ -246,25 +253,25 @@ def main():
         # Instantiate Objects with values if valid ip, range or network address is provided
         if network_type == 'Host':
             if validate_ip_address(value):
-                obj1 = Hosts(fmc=fmc1, name=name, value=value)
+                obj1 = Hosts(fmc=fmc1, name=name, value=value, description=description)
             else:
                 result = dict(failed=True, msg='Provided value is not a valid IP address')
                 module.exit_json(**result)
         elif network_type == 'Range':
             if validate_ip_range(value):
-                obj1 = Ranges(fmc=fmc1, name=name, value=value)
+                obj1 = Ranges(fmc=fmc1, name=name, value=value, description=description)
             else:
                 result = dict(failed=True, msg='Provided value is not a valid IP address range')
                 module.exit_json(**result)
         elif network_type == 'Network':
             if validate_network_address(value):
-                obj1 = Networks(fmc=fmc1, name=name, value=value)
+                obj1 = Networks(fmc=fmc1, name=name, value=value, description=description)
             else:
                 result = dict(failed=True, msg='Provided value is not a valid network address')
                 module.exit_json(**result)
         elif network_type == 'FQDN':
             if validate_fqdn(value):
-              obj1 = FQDNS(fmc=fmc1, name=name, value=value)
+              obj1 = FQDNS(fmc=fmc1, name=name, value=value, description=description)
             else:
                 result = dict(failed=True, msg='Provided value is not a valid FQDN for FTD')
                 module.exit_json(**result)
@@ -292,13 +299,13 @@ def main():
                 fmc_obj = create_obj(obj1)
             elif requested_state == 'present' and _create_obj is False:
                 if network_type == 'Host':
-                    obj1 = Hosts(fmc=fmc1, id=_obj1['id'], name=name, value=value)
+                    obj1 = Hosts(fmc=fmc1, id=_obj1['id'], name=name, value=value, description=description)
                 elif network_type == 'Range':
-                    obj1 = Ranges(fmc=fmc1, id=_obj1['id'], name=name, value=value)
+                    obj1 = Ranges(fmc=fmc1, id=_obj1['id'], name=name, value=value, description=description)
                 elif network_type == 'Network':
-                    obj1 = Networks(fmc=fmc1, id=_obj1['id'], name=name, value=value)
+                    obj1 = Networks(fmc=fmc1, id=_obj1['id'], name=name, value=value, description=description)
                 elif network_type == 'FQDN':
-                    obj1 = FQDNS(fmc=fmc1, id=_obj1['id'], name=name, value=value)
+                    obj1 = FQDNS(fmc=fmc1, id=_obj1['id'], name=name, value=value, description=description)
                 fmc_obj = update_obj(obj1)
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
