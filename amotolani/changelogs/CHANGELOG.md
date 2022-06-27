@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Running the acp_rule module without specifying "insert_after" and "insert_before" (for example if they are set to "null").
 - Variable namings for the ACP logging parameters to work.
 
+### Added
+- added option to include description for network object
+
 ## [Released]
 
 ##[1.1.4] - 2022-05-26
