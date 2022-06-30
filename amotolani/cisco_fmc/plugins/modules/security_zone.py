@@ -125,9 +125,12 @@ def main():
             if 'items' in _obj1.keys():
                 _create_obj = True
                 changed = True
-            elif _obj1['interfaceMode'] != interface_mode or _obj1['name'] != name:
+            elif _obj1['interfaceMode'] != interface_mode.upper() or _obj1['name'] != name:
                 _create_obj = False
-                changed = True 
+                changed = True
+            else:
+                changed = False
+                _create_obj = False
         else:
             if 'items' in _obj1.keys():
                 changed = False
