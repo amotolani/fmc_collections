@@ -2,7 +2,7 @@
 
 The Ansible collection includes a variety of Ansible content to help automate Cisco FMC via the FMC API
 
-This collection has been tested against Cisco FMC version 6.3.0.
+This collection has been tested against Cisco FMC version 6.3.0 and 6.6.1.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
