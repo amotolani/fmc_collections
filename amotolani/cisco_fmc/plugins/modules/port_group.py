@@ -40,6 +40,12 @@ options:
       - IP address or FQDN of Cisco FMC.
     type: str
     required: true
+  fmc_timeout:
+    description:
+      - time to wait (seconds) for the API response from FMC.
+    type: int
+    default: 5
+    required: false
   username:
     description:
       - Cisco FMC Username
@@ -79,7 +85,7 @@ EXAMPLES = r'''
     username: admin
     password: Cisco1234
 
-    
+
 - name: Remove address and port object from Port Group
   amotolani.cisco_fmc.port_group:
     name: Port-Group-2
@@ -101,6 +107,7 @@ def main():
             # group_literals=dict(type='list', elements='str'),
             group_objects=dict(type='list', elements='str'),
             fmc=dict(type='str', required=True),
+            fmc_timeout=dict(type='int', required=False, default=5),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
             auto_deploy=dict(type='bool', default=False)
@@ -120,6 +127,7 @@ def main():
     group_literals = None
     group_objects = module.params['group_objects']
     fmc = module.params['fmc']
+    fmc_timeout = module.params['fmc_timeout']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -179,7 +187,7 @@ def main():
         result = dict(failed=True, msg='Connection to FMC failed. Reason: {}'.format(err))
         module.exit_json(**result)
 
-    with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
+    with FMC(host=fmc, username=username, password=password, timeout=fmc_timeout, autodeploy=auto_deploy) as fmc1:
 
         # creates iterable by default when not set from user ui
         if group_literals is None:
