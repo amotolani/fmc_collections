@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Deletion of port groups - when running the port_group module with "absent" state. 
 - Running the acp_rule module without specifying "insert_after" and "insert_before" (for example if they are set to "null").
 - Variable namings for the ACP logging parameters to work.
+- Fixed check for the existing zone configuration
 
 ## [Released]
 
