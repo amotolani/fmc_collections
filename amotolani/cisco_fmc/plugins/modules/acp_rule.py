@@ -1078,6 +1078,9 @@ def main():
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section, insertBefore=insert_before)
         elif _create_obj and insert_after is not None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section, insertAfter=insert_after)
+        # Instantiate Access Rule with Section, without InsertAfter or InsertBefore
+        elif _create_obj and insert_before is None and insert_after is None:
+            obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section)
         elif _create_obj is False:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name,  id=_obj1['id'])
 
@@ -1142,13 +1145,13 @@ def main():
                 if action is not None:
                     obj1.action = action
                 if enable_syslog is not None:
-                    obj1.enable_syslog = enable_syslog
+                    obj1.enableSyslog = enable_syslog
                 if log_end is not None:
-                    obj1.log_end = log_end
+                    obj1.logEnd = log_end
                 if log_begin is not None:
-                    obj1.log_begin = log_begin
+                    obj1.logBegin = log_begin
                 if send_events_to_fmc is not None:
-                    obj1.send_events_to_fmc = send_events_to_fmc
+                    obj1.sendEventsToFMC = send_events_to_fmc
 
                 if _create_obj is True:
                     fmc_obj = create_obj(obj1)
