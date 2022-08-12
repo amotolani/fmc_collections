@@ -242,8 +242,10 @@ def main():
         else:
             if 'items' in _obj1.keys():
                 changed = False
+                _create_obj = False
             else:
                 changed = True
+                _create_obj = False
 
         # if Object already exists, Instantiate object again with id. This is necessary for using PUT method
         if _create_obj is False:

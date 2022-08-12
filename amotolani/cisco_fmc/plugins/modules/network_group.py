@@ -360,6 +360,7 @@ def main():
                 _create_obj = False
             else:
                 changed = True
+                _create_obj = False
 
         requested_config = {
             "literal": group_literals,

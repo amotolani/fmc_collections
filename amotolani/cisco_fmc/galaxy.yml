@@ -1,6 +1,6 @@
 namespace: amotolani
 name: cisco_fmc
-version: 1.1.4
+version: 1.1.5
 readme: README.md
 authors:
 - David Adelowo (GitHub > @amotolani)
