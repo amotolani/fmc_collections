@@ -5,3 +5,4 @@ ansible_collections
 playbooks
 *.txt
 args.json
+**/args/*

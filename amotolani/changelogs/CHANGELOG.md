@@ -17,10 +17,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ##[1.1.5] - 2022-06-24
 
 ### Fixed
+
 - Deletion of network groups - when running the network_group module with "absent" state. 
 - Deletion of port groups - when running the port_group module with "absent" state. 
 - Running the acp_rule module without specifying "insert_after" and "insert_before" (for example if they are set to "null").
 - Variable namings for the ACP logging parameters to work.
+- Fixed check for the existing zone configuration
+
+### Added
+- added option to include description for network object
+
 
 ## [Released]
 

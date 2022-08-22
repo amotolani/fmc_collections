@@ -1139,7 +1139,7 @@ def main():
         elif _create_obj and insert_after is not None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section, insertAfter=insert_after)
         # Instantiate Access Rule with Section, without InsertAfter or InsertBefore
-        elif _create_obj:
+        elif _create_obj and insert_before is None and insert_after is None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section)
         elif _create_obj is False:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name,  id=_obj1['id'])
