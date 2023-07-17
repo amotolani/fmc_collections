@@ -37,6 +37,12 @@ options:
       - IP address or FQDN of Cisco FMC.
     type: str
     required: true
+  fmc_timeout:
+    description:
+      - time to wait (seconds) for the API response from FMC.
+    type: int
+    default: 5
+    required: false
   username:
     description:
       - Cisco FMC Username
@@ -89,6 +95,7 @@ def main():
             vlan_start=dict(type='str'),
             vlan_end=dict(type='str'),
             fmc=dict(type='str', required=True),
+            fmc_timeout=dict(type='int', required=False, default=5),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True,  no_log=True),
             auto_deploy=dict(type='bool', default=False)
@@ -107,6 +114,7 @@ def main():
     vlan_start = module.params['vlan_start']
     vlan_end = module.params['vlan_end']
     fmc = module.params['fmc']
+    fmc_timeout = module.params['fmc_timeout']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -121,7 +129,7 @@ def main():
     def create_obj(obj):
         a = obj.post()
         return a
-    
+
     def delete_obj(obj):
         a = obj.delete()
         return a
@@ -165,7 +173,7 @@ def main():
         result = dict(failed=True, msg='Connection to FMC failed. Reason: {}'.format(err))
         module.exit_json(**result)
 
-    with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
+    with FMC(host=fmc, username=username, password=password, timeout=fmc_timeout, autodeploy=auto_deploy) as fmc1:
 
         # Instantiate Objects with values if valid vlan range is provided
         if validate_vlans(vlan_start, vlan_end):
@@ -173,7 +181,7 @@ def main():
         else:
             result = dict(failed=True, msg='Provided vlan range is not valid')
             module.exit_json(**result)
-        
+
         # Check existing state of the object
         _obj1 = get_obj(obj1)
         if requested_state == 'present':
@@ -182,7 +190,7 @@ def main():
                 changed = True
             elif _obj1['data']['startTag'] != int(vlan_start) or _obj1['data']['endTag'] != int(vlan_end) or _obj1['name'] != name:
                 _create_obj = False
-                changed = True 
+                changed = True
         else:
             if 'items' in _obj1.keys():
                 changed = False
@@ -207,7 +215,7 @@ def main():
                     msg = "An error occurred while sending request to cisco fmc"
                 result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
-                
+
     result = dict(changed=changed)
     module.exit_json(**result)
 

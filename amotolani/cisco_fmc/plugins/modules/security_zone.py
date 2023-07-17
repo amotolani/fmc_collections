@@ -30,6 +30,12 @@ options:
       - IP address or FQDN of Cisco FMC.
     type: str
     required: true
+  fmc_timeout:
+    description:
+      - time to wait (seconds) for the API response from FMC.
+    type: int
+    default: 5
+    required: false
   username:
     description:
       - Cisco FMC Username
@@ -78,6 +84,7 @@ def main():
             name=dict(type='str', required=True),
             interface_mode=dict(type='str', choices=['routed', 'switched', 'asa', 'inline', 'passive'], required=True),
             fmc=dict(type='str', required=True),
+            fmc_timeout=dict(type='int', required=False, default=5),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True,  no_log=True),
             auto_deploy=dict(type='bool', default=False)
@@ -92,6 +99,7 @@ def main():
     name = module.params['name']
     interface_mode = module.params['interface_mode']
     fmc = module.params['fmc']
+    fmc_timeout = module.params['fmc_timeout']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -105,7 +113,7 @@ def main():
     def create_obj(obj):
         a = obj.post()
         return a
-    
+
     def delete_obj(obj):
         a = obj.delete()
         return a
@@ -114,7 +122,7 @@ def main():
         a = obj.put()
         return a
 
-    with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
+    with FMC(host=fmc, username=username, password=password, timeout=fmc_timeout, autodeploy=auto_deploy) as fmc1:
 
         # Instantiate Objects with values
         obj1 = SecurityZones(fmc=fmc1, name=name)
@@ -134,8 +142,10 @@ def main():
         else:
             if 'items' in _obj1.keys():
                 changed = False
+                _create_obj = False
             else:
                 changed = True
+                _create_obj = False
 
         #  Instantiate Security Zone, if it doesnt exist.
         if _create_obj:
@@ -159,7 +169,7 @@ def main():
                     msg = "An error occurred while sending request to cisco fmc"
                 result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
-                
+
     result = dict(changed=changed)
     module.exit_json(**result)
 

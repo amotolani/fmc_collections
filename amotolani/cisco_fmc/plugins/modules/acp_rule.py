@@ -326,6 +326,12 @@ options:
       - IP address or FQDN of Cisco FMC.
     type: str
     required: true
+  fmc_timeout:
+    description:
+      - time to wait (seconds) for the API response from FMC.
+    type: int
+    default: 5
+    required: false
   username:
     description:
       - Cisco FMC Username
@@ -345,7 +351,7 @@ options:
     required: false
 '''
 
-EXAMPLES = r'''    
+EXAMPLES = r'''
 - name: Delete Access Policy Rule
   amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
@@ -358,7 +364,7 @@ EXAMPLES = r'''
     enabled: True
     insert_after: 1
     acp: test
-    
+
 - name: Create Access Policy Rule
   amotolani.cisco_fmc.acp_rule:
     name: Demo-Rule1900
@@ -401,11 +407,11 @@ def main():
             enabled=dict(type='bool', required=True),
             send_events_to_fmc=dict(type='bool', default=False),
             log_begin=dict(type='bool', default=False),
-            log_end=dict(type='bool', default=False),
+            log_end=dict(type='bool', default=True),
             enable_syslog=dict(type='bool', default=False),
             insert_before=dict(type='int'),
             insert_after=dict(type='int'),
-            section=dict(type='str', choices=['default', 'mandatory'], default='default'),
+            section=dict(type='str', choices=['Default', 'Mandatory'], default='Default'),
             acp=dict(type='str', required=True),
             intrusion_policy=dict(type='str'),
             file_policy=dict(type='str'),
@@ -508,6 +514,7 @@ def main():
                 )
             ),
             fmc=dict(type='str', required=True),
+            fmc_timeout=dict(type='int', required=False, default=5),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True, no_log=True),
             auto_deploy=dict(type='bool', default=False)
@@ -552,6 +559,7 @@ def main():
     destination_security_group_tags = module.params['destination_security_group_tags']
     acp = module.params['acp']
     fmc = module.params['fmc']
+    fmc_timeout = module.params['fmc_timeout']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -620,8 +628,12 @@ def main():
         current_config = []
         if fmc_config_name in _obj1.keys() and requested_config is not None:
 
-            # Call validate function to check that the requested config object is an existing cisco_fmc object
-            validate_multi_obj_config(requested_config=requested_config, config_class=config_class, config_name=config_name)
+            if requested_config == source_ports or requested_config == destination_ports:
+                # Call validate function to check that the port object is an existing cisco_fmc object
+                validate_port_obj_config(requested_config=requested_config, config_name=config_name)
+            else:
+                # Call validate function to check that the requested config object is an existing cisco_fmc object
+                validate_multi_obj_config(requested_config=requested_config, config_class=config_class, config_name=config_name)
 
             # rule exists, No objects of the specified type currently added, requested action for config is "add". Changed status set to True
             if len(_obj1[fmc_config_name]) == 0 and len(requested_config) > 0 and requested_config['action'] == 'add':
@@ -977,6 +989,54 @@ def main():
             else:
                 return True
 
+    def validate_port_obj_config(requested_config, config_name):
+      """
+      It is a custom version of the 'validate_multi_obj_config' function
+      Function validates that the requested configurations are existing cisco_fmc network objects
+      :param requested_config: Configuration to be added/removed from Access Rule
+      :param config_name: Configuration name in result dictionary
+      :return: boolean
+      """
+      _obj_list, port_obj, icmpv4_obj, group_obj = ([] for i in range(4))
+      if requested_config is None:
+          return True
+      else:
+          if requested_config['name'] is not None:
+              requested_config['name'] = [i for i in requested_config['name'] if i]
+              for i in requested_config['name']:
+                  config_obj = ProtocolPortObjects(fmc=fmc1, name=i)
+                  _config_obj = get_obj(config_obj)
+                  if 'items' in _config_obj:
+                      a = False
+                  else:
+                      a = True
+                  port_obj.append(a)
+                  config_obj = ICMPv4Objects(fmc=fmc1, name=i)
+                  _config_obj = get_obj(config_obj)
+                  if 'items' in _config_obj:
+                      a = False
+                  else:
+                      a = True
+                  icmpv4_obj.append(a)
+                  config_obj = PortObjectGroups(fmc=fmc1, name=i)
+                  _config_obj = get_obj(config_obj)
+                  if 'items' in _config_obj:
+                      a = False
+                  else:
+                      a = True
+                  group_obj.append(a)
+                  yy = requested_config['name'].index(i)
+                  if port_obj[yy] or icmpv4_obj[yy] or group_obj[yy]:
+                      a = True
+                  else:
+                      a = False
+                  _obj_list.append(a)
+          if not all(_obj_list):
+              result = dict(failed=True, msg='Check that the {} are existing cisco_fmc objects'.format(config_name))
+              module.exit_json(**result)
+          else:
+              return True
+
     # Custom argument validations
     # More of these are needed
     encoded_bytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
@@ -1007,7 +1067,7 @@ def main():
     else:
         pass
 
-    with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
+    with FMC(host=fmc, username=username, password=password, timeout=fmc_timeout, autodeploy=auto_deploy) as fmc1:
 
         # Instantiate Access Rule Object with values, but first validate the Access Policy object
         validate_single_obj_config(requested_config=acp, config_name='acp', config_class=AccessPolicies)
@@ -1023,8 +1083,8 @@ def main():
                 changed = True
                 _create_obj = True
                 validate_multi_obj_config(requested_config=vlan_tags, config_name='vlan_tags', config_class=VlanTags)
-                validate_multi_obj_config(requested_config=source_ports, config_name='source_ports', config_class=ProtocolPortObjects)
-                validate_multi_obj_config(requested_config=destination_ports, config_name='destination_ports', config_class=ProtocolPortObjects)
+                validate_port_obj_config(requested_config=source_ports, config_name='source_ports')
+                validate_port_obj_config(requested_config=destination_ports, config_name='destination_ports')
                 validate_multi_obj_config(requested_config=source_port_groups, config_name='source_port_groups', config_class=PortObjectGroups)
                 validate_multi_obj_config(requested_config=destination_port_groups, config_name='destination_port_groups', config_class=PortObjectGroups)
                 validate_net_obj_config(requested_config=source_networks, config_name='source_networks')

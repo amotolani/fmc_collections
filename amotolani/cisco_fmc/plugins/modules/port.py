@@ -25,7 +25,7 @@ options:
   protocol:
     description:
       - The network port protocol.
-      - Supported choices are TCP and UDP
+      - Supported choices are TCP, UDP and ICMPv4
     type: str
     required: true
   fmc:
@@ -33,11 +33,24 @@ options:
       - IP address or FQDN of Cisco FMC.
     type: str
     required: true
+  fmc_timeout:
+    description:
+      - time to wait (seconds) for the API response from FMC.
+    type: int
+    default: 5
+    required: false
   port:
     description:
       - Port/Port Range value of cisco_fmc object.
     type: str
-    required: true
+    required: false
+  icmp_type:
+    description:
+      - ICMP Type.
+      - Allowed "Any" or number 0 (icmp-echo) - 41.
+    type: int
+    default: Any
+    required: false
   username:
     description:
       - Cisco FMC Username
@@ -89,9 +102,11 @@ def main():
         argument_spec=dict(
             state=dict(type='str', choices=['present', 'absent'], required=True),
             name=dict(type='str', required=True),
-            port=dict(type='str', required=True),
-            protocol=dict(type='str', choices=['UDP', 'TCP'], required=True),
+            port=dict(type='str', required=False),
+            protocol=dict(type='str', choices=['UDP', 'TCP', 'ICMPv4'], required=True),
+            icmp_type=dict(type='str', required=False, default='Any'),
             fmc=dict(type='str', required=True),
+            fmc_timeout=dict(type='int', required=False, default=5),
             username=dict(type='str', required=True),
             password=dict(type='str', required=True,  no_log=True),
             auto_deploy=dict(type='bool', default=False)
@@ -106,7 +121,9 @@ def main():
     name = module.params['name']
     port = module.params['port']
     protocol = module.params['protocol']
+    icmp_type = module.params['icmp_type']
     fmc = module.params['fmc']
+    fmc_timeout = module.params['fmc_timeout']
     username = module.params['username']
     password = module.params['password']
     auto_deploy = module.params['auto_deploy']
@@ -145,6 +162,19 @@ def main():
         else:
             return False
 
+    def validate_icmp_type(value):
+        """
+            We need to check the ICMP type is valid.
+            :param value: icmp type
+            :return: boolean
+            """
+        if value == 'Any':
+            return True
+        elif value.isnumeric() and 0 <= int(value) <= 40:
+            return True
+        else:
+            return False
+
     # Custom argument validations
     # More of these are needed
     encoded_bytes = base64.b64encode(bytes(username + ':' + password, 'utf-8'))
@@ -166,37 +196,53 @@ def main():
         result = dict(failed=True, msg='Connection to FMC failed. Reason: {}'.format(err))
         module.exit_json(**result)
 
-    with FMC(host=fmc, username=username, password=password, autodeploy=auto_deploy) as fmc1:
+    with FMC(host=fmc, username=username, password=password, timeout=fmc_timeout, autodeploy=auto_deploy) as fmc1:
 
-        # Instantiate Objects with values if valid Port/Port Range is provided
-        if validate_port(port):
-            obj1 = ProtocolPortObjects(fmc=fmc1, name=name, port=port, protocol=protocol)
+        if protocol == 'ICMPv4':
+          # Instantiate ICMP Objects with values
+          if validate_icmp_type(icmp_type):
+              obj1 = ICMPv4Objects(fmc=fmc1, name=name, icmpType=icmp_type)
+          else:
+              result = dict(failed=True, msg='Provided ICMP type is not valid. allowed: "Any" or number 0-41')
+              module.exit_json(**result)
         else:
-            result = dict(failed=True, msg='Provided Port/Port Range is not valid')
-            module.exit_json(**result)
-        
+          # Instantiate port Objects with values if valid Port/Port Range is provided
+          if validate_port(port):
+              obj1 = ProtocolPortObjects(fmc=fmc1, name=name, port=port, protocol=protocol)
+          else:
+              result = dict(failed=True, msg='Provided Port/Port Range is not valid')
+              module.exit_json(**result)
+
         # Check existing state of the object
         _obj1 = get_obj(obj1)
         if requested_state == 'present':
             if 'items' in _obj1.keys():
                 _create_obj = True
                 changed = True
-            elif _obj1['port'] != port or _obj1['name'] != name:
-                _create_obj = False
-                changed = True 
+            elif protocol == 'ICMPv4':
+              if _obj1['icmpType'] != icmp_type or _obj1['name'] != name:
+                  _create_obj = False
+                  changed = True
+            else:
+              if _obj1['port'] != port or _obj1['name'] != name:
+                  _create_obj = False
+                  changed = True
         else:
             if 'items' in _obj1.keys():
                 changed = False
             else:
                 changed = True
-
         # Perform action to change object state if not in check mode
         if changed is True and module.check_mode is False:
             if requested_state == 'present' and _create_obj is True:
                 fmc_obj = create_obj(obj1)
             elif requested_state == 'present' and _create_obj is False:
-                obj1 = ProtocolPortObjects(fmc=fmc1, id=_obj1['id'], name=name, port=port, protocol=protocol)
-                fmc_obj = update_obj(obj1)
+                if protocol == 'ICMPv4':
+                    obj1 = ICMPv4Objects(fmc=fmc1, id=_obj1['id'], name=name, icmpType=icmp_type)
+                    fmc_obj = update_obj(obj1)
+                else:
+                    obj1 = ProtocolPortObjects(fmc=fmc1, id=_obj1['id'], name=name, port=port, protocol=protocol)
+                    fmc_obj = update_obj(obj1)
             elif requested_state == 'absent':
                 fmc_obj = delete_obj(obj1)
             if fmc_obj is None:
@@ -208,7 +254,7 @@ def main():
                     msg = "An error occurred while sending request to cisco fmc"
                 result = dict(failed=True, msg=msg)
                 module.exit_json(**result)
-                
+
     result = dict(changed=changed)
     module.exit_json(**result)
 

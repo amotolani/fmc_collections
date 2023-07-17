@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Released]
 
+##[1.1.6] - 2022-07-14
+
+### Added
+- support for ICMPv4 in port objects and ACP rules. For this feature to work, the requirenment is for ***fmcapi*** Python package to be minimum version ____
+- support for FMC timeout - define FMC API response timeout in playbook (For slower FMC servers, the default timeout (5s) can produce tasks to fail due to timeout)
+
+## [Released]
+
 ##[1.1.5] - 2022-06-24
 
 ### Fixed
