@@ -200,8 +200,8 @@ def main():
         :param config_name: Configuration name in result dictionary
         :return: boolean
         """
-        _obj_list, net_obj, ip_obj, range_obj, net_group_obj = ([] for i in range(5))
-        _literal_list, net_literal, ip_literal, range_literal = ([] for i in range(4))
+        _obj_list, net_obj, ip_obj, range_obj, net_group_obj, fqdn_obj = ([] for i in range(6))
+        _literal_list, net_literal, ip_literal, range_literal, fqdn_literal= ([] for i in range(5))
 
         # store all network group objects for use later
         network_group_objects = list()
@@ -245,8 +245,17 @@ def main():
                         network_group_objects.append(i)
                     net_group_obj.append(a)
 
+                    config_obj = FQDNS(fmc=fmc1, name=i)
+                    _config_obj = get_obj(config_obj)
+                    if 'items' in _config_obj:
+                        a = False
+                    else:
+                        a = True
+                        network_group_objects.append(i)
+                    fqdn_obj.append(a)
+
                     yy = requested_config['name'].index(i)
-                    if net_obj[yy] or range_obj[yy] or ip_obj[yy] or net_group_obj[yy]:
+                    if net_obj[yy] or range_obj[yy] or ip_obj[yy] or net_group_obj[yy] or fqdn_obj[yy]:
                         a = True
                     else:
                         a = False

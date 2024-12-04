@@ -50,17 +50,24 @@ options:
   insert_before:
     description:
       - Insert new rule before the specified index
+      - Required when category is not provided
     type: int
     required: false
   insert_after:
     description:
       - Insert new rule after the specified index
+      - Required when category is not provided
     type: int
     required: false
   section:
     description:
       - Access Rule Section
       - 'Allowed value [''default'', ''mandatory'']'
+    type: str
+    required: false
+  category:
+    description:
+      - Access Rule Category
     type: str
     required: false
   acp:
@@ -406,6 +413,7 @@ def main():
             insert_before=dict(type='int'),
             insert_after=dict(type='int'),
             section=dict(type='str', choices=['default', 'mandatory'], default='default'),
+            category=dict(type='str', required=False),
             acp=dict(type='str', required=True),
             intrusion_policy=dict(type='str'),
             file_policy=dict(type='str'),
@@ -517,7 +525,7 @@ def main():
             ["state", "present", ["action"]],
         ],
         required_one_of=[
-            ['insert_after', 'insert_before']
+            ['insert_after', 'insert_before', 'category']
         ]
     )
     changed = False
@@ -535,6 +543,7 @@ def main():
     insert_before = module.params['insert_before']
     insert_after = module.params['insert_after']
     section = module.params['section']
+    category = module.params['category']
     variable_set = module.params['variable_set']
     source_networks = module.params['source_networks']
     vlan_tags = module.params['vlan_tags']
@@ -1073,11 +1082,13 @@ def main():
                 changed = True
 
         #  Instantiate Access Rule with Section, InsertAfter or InsertBefore, if provided
-        #  To do: Instantiate Access Rule with category if supplied
         if _create_obj and insert_before is not None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section, insertBefore=insert_before)
         elif _create_obj and insert_after is not None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section, insertAfter=insert_after)
+        # Instantiate Access Rule with Category
+        elif _create_obj and insert_before is None and insert_after is None and category is not None:
+            obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, category=category)
         # Instantiate Access Rule with Section, without InsertAfter or InsertBefore
         elif _create_obj and insert_before is None and insert_after is None:
             obj1 = AccessRules(fmc=fmc1, acp_name=acp, action=action, name=name, section=section)
